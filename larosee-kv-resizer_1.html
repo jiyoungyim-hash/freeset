@@ -393,7 +393,7 @@ body {
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ══ 커스터마이징 바텀시트 ══ */
+/* ══ 커스터마이징 시트 (전체화면 분할) ══ */
 .sheet-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.45);
@@ -404,76 +404,79 @@ body {
 .sheet-overlay.open { opacity: 1; pointer-events: all; }
 
 .custom-sheet {
-  position: fixed; bottom: 0; left: 0; right: 0;
+  position: fixed; inset: 0;
   background: var(--ivory);
-  border-radius: 24px 24px 0 0;
   z-index: 301;
   transform: translateY(100%);
   transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-  max-height: 92dvh;
   display: flex; flex-direction: column;
 }
 .custom-sheet.open { transform: translateY(0); }
 
-.sheet-handle {
-  width: 36px; height: 4px;
-  background: var(--border-strong);
-  border-radius: 2px;
-  margin: 12px auto 0;
-  flex-shrink: 0;
-}
 .sheet-header {
-  padding: 16px 24px 12px;
+  padding: calc(var(--safe-top) + 14px) 20px 14px;
   display: flex; align-items: center; justify-content: space-between;
   flex-shrink: 0;
+  background: var(--white);
   border-bottom: 1px solid var(--border);
 }
 .sheet-title {
   font-family: var(--font-en);
-  font-size: 20px; font-weight: 300; letter-spacing: 0.5px;
+  font-size: 18px; font-weight: 300; letter-spacing: 0.5px;
 }
 .sheet-close {
-  width: 30px; height: 30px; border-radius: 50%;
+  width: 32px; height: 32px; border-radius: 50%;
   background: var(--stone); border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px; color: var(--muted);
+  font-size: 15px; color: var(--muted);
 }
 
-.sheet-body {
-  flex: 1; overflow-y: auto;
-  padding: 20px 24px;
-  display: flex; flex-direction: column; gap: 20px;
+/* ── 분할 레이아웃 ── */
+.sheet-split {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+}
+@media (min-width: 640px) {
+  .sheet-split { flex-direction: row; }
 }
 
-/* 실시간 미리보기 */
-.custom-preview-wrap {
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
+/* 미리보기 패널 (위쪽 / 왼쪽) */
+.sheet-preview-pane {
+  flex-shrink: 0;
+  height: 42vh;
+  background: #efefef;
+  display: flex; flex-direction: column;
   overflow: hidden;
-}
-.custom-preview-top {
-  background: #f0f0f0;
-  min-height: 200px;
-  display: flex; align-items: center; justify-content: center;
   position: relative;
-  overflow: hidden;
 }
-.custom-preview-top::before {
+@media (min-width: 640px) {
+  .sheet-preview-pane {
+    height: auto; width: 50%;
+    border-right: 1px solid var(--border);
+  }
+}
+.sheet-preview-pane::before {
   content: '';
   position: absolute; inset: 0;
-  background: repeating-conic-gradient(#e0e0e0 0% 25%, #f0f0f0 0% 50%) 0 0 / 16px 16px;
+  background: repeating-conic-gradient(#e0e0e0 0% 25%, #efefef 0% 50%) 0 0 / 16px 16px;
+  pointer-events: none;
 }
-.custom-preview-top canvas {
+.sheet-canvas-center {
+  flex: 1; display: flex; align-items: center; justify-content: center;
   position: relative; z-index: 1;
-  max-width: 90%; max-height: 180px;
+  padding: 16px;
+}
+.sheet-canvas-center canvas {
+  max-width: 100%; max-height: 100%;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  display: block;
 }
 .custom-preview-nav {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 16px;
+  padding: 10px 16px;
   border-top: 1px solid var(--border);
-  background: var(--stone);
+  background: rgba(242,237,232,0.95);
+  backdrop-filter: blur(8px);
+  flex-shrink: 0; position: relative; z-index: 1;
 }
 .custom-preset-name { font-size: 12px; font-weight: 500; }
 .custom-preset-dim { font-size: 10px; color: var(--muted); }
@@ -486,11 +489,23 @@ body {
 .nav-btn:active { background: var(--stone); }
 .nav-counter { font-size: 11px; color: var(--muted); align-self: center; }
 
+/* 컨트롤 패널 (아래쪽 / 오른쪽) */
+.sheet-controls-pane {
+  flex: 1; overflow-y: auto;
+  padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+
 /* 컨트롤 섹션 */
 .ctrl-section { display: flex; flex-direction: column; gap: 12px; }
 .ctrl-label {
   font-size: 9px; font-weight: 600; letter-spacing: 2px;
   text-transform: uppercase; color: var(--muted);
+}
+.ctrl-sub-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--muted);
+  margin-top: 4px;
 }
 .ctrl-card {
   background: var(--white);
@@ -573,13 +588,7 @@ body {
 }
 .scope-btn.active { background: var(--rose-deep); border-color: var(--rose-deep); color: #fff; }
 
-/* 시트 하단 버튼 */
-.sheet-footer {
-  padding: 16px 24px calc(var(--safe-bottom) + 16px);
-  border-top: 1px solid var(--border);
-  display: flex; gap: 10px; flex-shrink: 0;
-  background: var(--white);
-}
+
 .btn-reset {
   padding: 13px 18px; border-radius: var(--radius);
   border: 1px solid var(--border-strong); background: transparent;
@@ -706,8 +715,8 @@ body {
   <div class="channel-panel">
     <div class="ch-scroll" id="chScroll">
       <button class="ch-pill active" data-ch="all">전체</button>
-      <button class="ch-pill" data-ch="online">브랜드스토어</button>
       <button class="ch-pill" data-ch="web">공식홈페이지</button>
+      <button class="ch-pill" data-ch="online">브랜드스토어</button>
       <button class="ch-pill" data-ch="offline">오프라인</button>
       <button class="ch-pill" data-ch="sns">SNS</button>
       <button class="ch-pill" data-ch="ad">광고매체</button>
@@ -748,16 +757,16 @@ body {
 <!-- ══ 커스터마이징 바텀시트 ══ -->
 <div class="sheet-overlay" id="sheetOverlay"></div>
 <div class="custom-sheet" id="customSheet">
-  <div class="sheet-handle"></div>
   <div class="sheet-header">
     <div class="sheet-title">내보내기 설정</div>
     <button class="sheet-close" id="sheetClose">✕</button>
   </div>
-  <div class="sheet-body">
 
-    <!-- 실시간 미리보기 + 채널 네비 -->
-    <div class="custom-preview-wrap">
-      <div class="custom-preview-top" id="customPreviewTop">
+  <div class="sheet-split">
+
+    <!-- ── 미리보기 패널 ── -->
+    <div class="sheet-preview-pane">
+      <div class="sheet-canvas-center">
         <canvas id="customCanvas"></canvas>
       </div>
       <div class="custom-preview-nav">
@@ -775,131 +784,134 @@ body {
       </div>
     </div>
 
-    <!-- 위치 조정 -->
-    <div class="ctrl-section">
-      <div class="ctrl-label">이미지 위치</div>
-      <div class="ctrl-card">
-        <div class="pos-grid" id="posGrid">
-          <button class="pos-btn" data-pos="tl">↖</button>
-          <button class="pos-btn" data-pos="tc">↑</button>
-          <button class="pos-btn" data-pos="tr">↗</button>
-          <button class="pos-btn" data-pos="ml">←</button>
-          <button class="pos-btn active" data-pos="mc">·</button>
-          <button class="pos-btn" data-pos="mr">→</button>
-          <button class="pos-btn" data-pos="bl">↙</button>
-          <button class="pos-btn" data-pos="bc">↓</button>
-          <button class="pos-btn" data-pos="br">↘</button>
-        </div>
-        <!-- 미세 오프셋 -->
-        <div class="slider-row">
-          <label>X 이동</label>
-          <input type="range" id="offsetX" min="-50" max="50" value="0" step="1">
-          <span class="slider-val" id="offsetXVal">0%</span>
-        </div>
-        <div class="slider-row">
-          <label>Y 이동</label>
-          <input type="range" id="offsetY" min="-50" max="50" value="0" step="1">
-          <span class="slider-val" id="offsetYVal">0%</span>
-        </div>
-      </div>
-    </div>
+    <!-- ── 컨트롤 패널 ── -->
+    <div class="sheet-controls-pane">
 
-    <!-- 확대/축소 -->
-    <div class="ctrl-section">
-      <div class="ctrl-label">이미지 크기</div>
-      <div class="ctrl-card">
-        <div class="slider-row">
-          <label>줌</label>
-          <input type="range" id="zoomLevel" min="50" max="150" value="100" step="1">
-          <span class="slider-val" id="zoomVal">100%</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 배경색 -->
-    <div class="ctrl-section">
-      <div class="ctrl-label">여백 배경색</div>
-      <div class="ctrl-card">
-        <div class="bg-color-row" id="bgColorRow">
-          <div class="color-swatch active" data-color="auto" style="background:linear-gradient(135deg,#f9f5f0,#d4c4bc);" title="자동(엣지색)"></div>
-          <div class="color-swatch" data-color="#FFFFFF" style="background:#FFFFFF;border:1px solid #eee;"></div>
-          <div class="color-swatch" data-color="#000000" style="background:#000000;"></div>
-          <div class="color-swatch" data-color="#FAF8F5" style="background:#FAF8F5;border:1px solid #eee;"></div>
-          <div class="color-swatch" data-color="#F2EDE8" style="background:#F2EDE8;border:1px solid #eee;"></div>
-          <div class="color-swatch" data-color="#009CDE" style="background:#009CDE;"></div>
-          <div class="color-swatch" data-color="#C8A49A" style="background:#C8A49A;"></div>
-          <div class="color-custom" title="직접 선택">
-            🎨<input type="color" id="customBgColor" value="#ffffff">
+      <!-- 위치 조정 -->
+      <div class="ctrl-section">
+        <div class="ctrl-label">이미지 위치</div>
+        <div class="ctrl-card">
+          <div class="pos-grid" id="posGrid">
+            <button class="pos-btn" data-pos="tl">↖</button>
+            <button class="pos-btn" data-pos="tc">↑</button>
+            <button class="pos-btn" data-pos="tr">↗</button>
+            <button class="pos-btn" data-pos="ml">←</button>
+            <button class="pos-btn active" data-pos="mc">·</button>
+            <button class="pos-btn" data-pos="mr">→</button>
+            <button class="pos-btn" data-pos="bl">↙</button>
+            <button class="pos-btn" data-pos="bc">↓</button>
+            <button class="pos-btn" data-pos="br">↘</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 밝기·대비·채도 -->
-    <div class="ctrl-section">
-      <div class="ctrl-label">이미지 보정</div>
-      <div class="ctrl-card">
-        <div class="slider-row">
-          <label>밝기</label>
-          <input type="range" id="brightness" min="50" max="150" value="100" step="1">
-          <span class="slider-val" id="brightnessVal">100%</span>
-        </div>
-        <div class="slider-row">
-          <label>대비</label>
-          <input type="range" id="contrast" min="50" max="150" value="100" step="1">
-          <span class="slider-val" id="contrastVal">100%</span>
-        </div>
-        <div class="slider-row">
-          <label>채도</label>
-          <input type="range" id="saturation" min="0" max="200" value="100" step="1">
-          <span class="slider-val" id="saturationVal">100%</span>
+      <!-- 배경색 -->
+      <div class="ctrl-section">
+        <div class="ctrl-label">여백 배경색</div>
+        <div class="ctrl-card">
+          <div class="bg-color-row" id="bgColorRow">
+            <div class="color-swatch active" data-color="auto" style="background:linear-gradient(135deg,#f9f5f0,#d4c4bc);" title="자동(엣지색)"></div>
+            <div class="color-swatch" data-color="#FFFFFF" style="background:#FFFFFF;border:1px solid #eee;"></div>
+            <div class="color-swatch" data-color="#000000" style="background:#000000;"></div>
+            <div class="color-swatch" data-color="#FAF8F5" style="background:#FAF8F5;border:1px solid #eee;"></div>
+            <div class="color-swatch" data-color="#F2EDE8" style="background:#F2EDE8;border:1px solid #eee;"></div>
+            <div class="color-swatch" data-color="#009CDE" style="background:#009CDE;"></div>
+            <div class="color-swatch" data-color="#C8A49A" style="background:#C8A49A;"></div>
+            <div class="color-custom" title="직접 선택">
+              🎨<input type="color" id="customBgColor" value="#ffffff">
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 텍스트/워터마크 -->
-    <div class="ctrl-section">
-      <div class="ctrl-label">텍스트 / 워터마크</div>
-      <div class="ctrl-card">
-        <div class="text-input-wrap">
-          <input type="text" id="watermarkText" placeholder="예: Larosée Korea  ·  © 2025" maxlength="60">
-        </div>
-        <div class="slider-row">
-          <label>크기</label>
-          <input type="range" id="wmSize" min="10" max="60" value="24" step="1">
-          <span class="slider-val" id="wmSizeVal">24px</span>
-        </div>
-        <div class="slider-row">
-          <label>투명도</label>
-          <input type="range" id="wmOpacity" min="5" max="100" value="30" step="5">
-          <span class="slider-val" id="wmOpacityVal">30%</span>
-        </div>
-        <div class="text-pos-row" id="wmPosRow">
-          <button class="text-pos-btn" data-wpos="tl">좌상</button>
-          <button class="text-pos-btn" data-wpos="tc">상단</button>
-          <button class="text-pos-btn" data-wpos="tr">우상</button>
-          <button class="text-pos-btn active" data-wpos="br">우하</button>
-          <button class="text-pos-btn" data-wpos="bc">하단</button>
-          <button class="text-pos-btn" data-wpos="bl">좌하</button>
-          <button class="text-pos-btn" data-wpos="mc">중앙</button>
+      <!-- 밝기·대비·채도 -->
+      <div class="ctrl-section">
+        <div class="ctrl-label">이미지 보정</div>
+        <div class="ctrl-card">
+          <div class="slider-row">
+            <label>밝기</label>
+            <input type="range" id="brightness" min="50" max="150" value="100" step="1">
+            <span class="slider-val" id="brightnessVal">100%</span>
+          </div>
+          <div class="slider-row">
+            <label>대비</label>
+            <input type="range" id="contrast" min="50" max="150" value="100" step="1">
+            <span class="slider-val" id="contrastVal">100%</span>
+          </div>
+          <div class="slider-row">
+            <label>채도</label>
+            <input type="range" id="saturation" min="0" max="200" value="100" step="1">
+            <span class="slider-val" id="saturationVal">100%</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 적용 범위 -->
-    <div class="ctrl-section">
-      <div class="ctrl-label">설정 적용 범위</div>
-      <div class="scope-row">
-        <button class="scope-btn active" id="scopeCurrent">현재 채널만</button>
-        <button class="scope-btn" id="scopeAll">전체 채널 일괄</button>
+      <!-- 텍스트 -->
+      <div class="ctrl-section">
+        <div class="ctrl-label">텍스트</div>
+        <div class="ctrl-card">
+          <div class="text-input-wrap">
+            <input type="text" id="watermarkText" placeholder="이미지에 넣을 텍스트를 입력하세요" maxlength="80">
+          </div>
+          <div class="slider-row">
+            <label>크기</label>
+            <input type="range" id="wmSize" min="10" max="120" value="24" step="1">
+            <span class="slider-val" id="wmSizeVal">24px</span>
+          </div>
+          <div class="slider-row">
+            <label>투명도</label>
+            <input type="range" id="wmOpacity" min="5" max="100" value="100" step="5">
+            <span class="slider-val" id="wmOpacityVal">100%</span>
+          </div>
+          <!-- 텍스트 색상 -->
+          <div class="ctrl-sub-label">색상</div>
+          <div class="bg-color-row" id="wmColorRow">
+            <div class="color-swatch active" data-wmcolor="#FFFFFF" style="background:#FFFFFF;border:1px solid #ddd;" title="흰색"></div>
+            <div class="color-swatch" data-wmcolor="#000000" style="background:#000000;" title="검정"></div>
+            <div class="color-swatch" data-wmcolor="#009CDE" style="background:#009CDE;" title="라로제 블루"></div>
+            <div class="color-swatch" data-wmcolor="#C8A49A" style="background:#C8A49A;" title="라로제 로즈"></div>
+            <div class="color-swatch" data-wmcolor="#FAF8F5" style="background:#FAF8F5;border:1px solid #ddd;" title="아이보리"></div>
+            <div class="color-custom" title="직접 선택">
+              🎨<input type="color" id="wmCustomColor" value="#ffffff">
+            </div>
+          </div>
+          <!-- 굵기 -->
+          <div class="ctrl-sub-label">굵기</div>
+          <div class="scope-row">
+            <button class="scope-btn active" id="wmWeightNormal">보통</button>
+            <button class="scope-btn" id="wmWeightBold">굵게</button>
+          </div>
+          <!-- 위치 -->
+          <div class="ctrl-sub-label">위치</div>
+          <div class="text-pos-row" id="wmPosRow">
+            <button class="text-pos-btn" data-wpos="tl">좌상</button>
+            <button class="text-pos-btn" data-wpos="tc">상단</button>
+            <button class="text-pos-btn" data-wpos="tr">우상</button>
+            <button class="text-pos-btn active" data-wpos="br">우하</button>
+            <button class="text-pos-btn" data-wpos="bc">하단</button>
+            <button class="text-pos-btn" data-wpos="bl">좌하</button>
+            <button class="text-pos-btn" data-wpos="mc">중앙</button>
+          </div>
+        </div>
       </div>
-    </div>
 
-  </div>
-  <div class="sheet-footer">
-    <button class="btn-reset" id="sheetReset">초기화</button>
-    <button class="btn-confirm" id="sheetConfirm">⬇ 이 설정으로 내보내기</button>
-  </div>
+      <!-- 적용 범위 -->
+      <div class="ctrl-section">
+        <div class="ctrl-label">설정 적용 범위</div>
+        <div class="scope-row">
+          <button class="scope-btn active" id="scopeCurrent">현재 채널만</button>
+          <button class="scope-btn" id="scopeAll">전체 채널 일괄</button>
+        </div>
+      </div>
+
+      <!-- 하단 버튼 (컨트롤 패널 내부) -->
+      <div style="display:flex;gap:10px;padding-bottom:calc(var(--safe-bottom) + 4px);">
+        <button class="btn-reset" id="sheetReset">초기화</button>
+        <button class="btn-confirm" id="sheetConfirm">⬇ 이 설정으로 내보내기</button>
+      </div>
+
+    </div><!-- /sheet-controls-pane -->
+  </div><!-- /sheet-split -->
 </div>
 
 <div class="toast" id="toast"></div>
@@ -939,6 +951,15 @@ const PRESETS = [
   { id:'yt_thumb',    name:'유튜브 썸네일',             w:1280, h:720,  ch:'sns', icon:'▶️', ratio:'16:9' },
   { id:'yt_banner',   name:'유튜브 채널 아트',          w:2560, h:1440, ch:'sns', icon:'▶️', ratio:'16:9' },
 
+  // 공식홈페이지
+  { id:'web_main_banner',  name:'메인 풀배너',            w:1920, h:1080, ch:'web', icon:'🌐', ratio:'16:9', url:'larosee.co.kr' },
+  { id:'web_wide_banner',  name:'와이드 섹션 배너',       w:1920, h:604,  ch:'web', icon:'🌐', ratio:'Wide', url:'larosee.co.kr' },
+  { id:'web_brand_photo',  name:'브랜드·매장 사진',       w:1920, h:1280, ch:'web', icon:'🌐', ratio:'3:2',  url:'larosee.co.kr' },
+  { id:'web_story_banner', name:'스토리 배너',            w:1600, h:480,  ch:'web', icon:'🌐', ratio:'10:3', url:'larosee.co.kr' },
+  { id:'web_sub_banner',   name:'서브 섹션 배너',         w:1280, h:720,  ch:'web', icon:'🌐', ratio:'16:9', url:'larosee.co.kr' },
+  { id:'web_card_banner',  name:'콘텐츠 카드 배너',       w:1000, h:500,  ch:'web', icon:'🌐', ratio:'2:1',  url:'larosee.co.kr' },
+  { id:'web_benefit_bar',  name:'멤버십·혜택 배너',       w:1080, h:274,  ch:'web', icon:'🌐', ratio:'4:1',  url:'larosee.co.kr' },
+
   // 광고매체
   { id:'disp_300x250',name:'디스플레이 광고 (300×250)', w:300,  h:250,  ch:'ad', icon:'📺', ratio:'6:5' },
   { id:'disp_728x90', name:'디스플레이 광고 (728×90)',  w:728,  h:90,   ch:'ad', icon:'📺', ratio:'8:1' },
@@ -961,7 +982,7 @@ const CH_LABELS = {
 
 const CH_GROUPS = {
   online:  ['ss_main','ss_detail','coupang_main','coupang_ban','oliveyoung','oliveyoung_s','musinsa_main','kakao_shop','naver_place'],
-  web:     [],
+  web:     ['web_main_banner','web_wide_banner','web_brand_photo','web_story_banner','web_sub_banner','web_card_banner','web_benefit_bar'],
   offline: ['dept_main','dept_wide','dept_banner','dept_pop','counter_top','window'],
   sns:     ['ig_feed_sq','ig_feed_pt','ig_story','ig_cover','ka_channel','ka_post','ka_story','naver_blog','naver_post','yt_thumb','yt_banner'],
   ad:      ['disp_300x250','disp_728x90','disp_320x100','disp_970x250','kakao_moment','naver_gfa','outdoor_6x2','outdoor_mega'],
@@ -1079,7 +1100,7 @@ function renderPresets() {
 
   // 그룹별 렌더
   const chOrder = currentCh === 'all'
-    ? ['online','web','offline','sns','ad']
+    ? ['web','online','offline','sns','ad']
     : [currentCh];
 
   chOrder.forEach(ch => {
@@ -1098,7 +1119,7 @@ function renderPresets() {
         <input type="checkbox" ${selectedIds.has(preset.id) ? 'checked' : ''} data-id="${preset.id}">
         <div class="preset-info">
           <div class="preset-name">${preset.name}</div>
-          <div class="preset-dim">${preset.w} × ${preset.h}px</div>
+          <div class="preset-dim">${preset.w} × ${preset.h}px${preset.url ? ` · <span style="color:var(--rose-deep)">${preset.url}</span>` : ''}</div>
         </div>
         <span class="preset-ratio">${preset.ratio}</span>
       `;
@@ -1248,7 +1269,7 @@ function renderPreviews() {
   empty.style.display = 'none';
 
   // 채널별 그룹으로 렌더
-  const chOrder = ['online','web','offline','sns','ad'];
+  const chOrder = ['web','online','offline','sns','ad'];
   chOrder.forEach(ch => {
     const group = selected.filter(p => p.ch === ch);
     if (!group.length) return;
@@ -1313,12 +1334,10 @@ function downloadOne(preset) {
 // 채널별 독립 설정 저장
 const customSettings = {}; // id → settings object
 const defaultSettings = () => ({
-  posH: 'mc', posV: 'mc',   // 위치
-  offsetX: 0, offsetY: 0,   // 미세이동 (%)
-  zoom: 100,                 // 줌 (%)
-  bgColor: 'auto',           // 배경색
+  posH: 'mc', posV: 'mc',
+  bgColor: 'auto',
   brightness: 100, contrast: 100, saturation: 100,
-  wmText: '', wmSize: 24, wmOpacity: 30, wmPos: 'br'
+  wmText: '', wmSize: 24, wmOpacity: 100, wmPos: 'br', wmColor: '#FFFFFF', wmBold: false
 });
 
 function getSettings(id) {
@@ -1360,12 +1379,6 @@ function loadSheetPreset(idx) {
   document.getElementById('navCounter').textContent = (idx+1) + ' / ' + sheetPresets.length;
 
   // 컨트롤 값 복원
-  document.getElementById('offsetX').value = s.offsetX;
-  document.getElementById('offsetXVal').textContent = s.offsetX + '%';
-  document.getElementById('offsetY').value = s.offsetY;
-  document.getElementById('offsetYVal').textContent = s.offsetY + '%';
-  document.getElementById('zoomLevel').value = s.zoom;
-  document.getElementById('zoomVal').textContent = s.zoom + '%';
   document.getElementById('brightness').value = s.brightness;
   document.getElementById('brightnessVal').textContent = s.brightness + '%';
   document.getElementById('contrast').value = s.contrast;
@@ -1397,6 +1410,15 @@ function loadSheetPreset(idx) {
   document.querySelectorAll('[data-wpos]').forEach(b => {
     b.classList.toggle('active', b.dataset.wpos === s.wmPos);
   });
+
+  // 텍스트 색상
+  document.querySelectorAll('[data-wmcolor]').forEach(sw => {
+    sw.classList.toggle('active', sw.dataset.wmcolor === s.wmColor);
+  });
+
+  // 텍스트 굵기
+  document.getElementById('wmWeightNormal').classList.toggle('active', !s.wmBold);
+  document.getElementById('wmWeightBold').classList.toggle('active', s.wmBold);
 
   updateSheetPreview();
 }
@@ -1437,38 +1459,34 @@ function drawImageCustom(canvas, img, w, h, s) {
     ctx.fillRect(0, 0, w, h);
   }
 
-  // 이미지 크기
+  // 이미지 크기 (contain)
   const iw = img.naturalWidth, ih = img.naturalHeight;
   const baseScale = Math.min(w / iw, h / ih);
-  const zoom = s.zoom / 100;
-  const dw = iw * baseScale * zoom;
-  const dh = ih * baseScale * zoom;
+  const dw = iw * baseScale;
+  const dh = ih * baseScale;
 
   // 위치 (posH: ml/mc/mr, posV: tc/mc/bc)
-  const ph = s.posH === 'ml' ? 0 : s.posH === 'mr' ? w - dw : (w - dw) / 2;
-  const pv = s.posV === 'tc' ? 0 : s.posV === 'bc' ? h - dh : (h - dh) / 2;
-
-  // 오프셋
-  const ox = (s.offsetX / 100) * w;
-  const oy = (s.offsetY / 100) * h;
+  const px = s.posH === 'ml' ? 0 : s.posH === 'mr' ? w - dw : (w - dw) / 2;
+  const py = s.posV === 'tc' ? 0 : s.posV === 'bc' ? h - dh : (h - dh) / 2;
 
   // 필터 적용
   ctx.save();
   ctx.filter = `brightness(${s.brightness}%) contrast(${s.contrast}%) saturate(${s.saturation}%)`;
-  ctx.drawImage(img, ph + ox, pv + oy, dw, dh);
+  ctx.drawImage(img, px, py, dw, dh);
   ctx.restore();
 
-  // 워터마크
+  // 텍스트
   if (s.wmText) {
     const fontSize = Math.max(8, Math.round(s.wmSize * (w / 400)));
+    const weight = s.wmBold ? '700' : '400';
     ctx.save();
     ctx.globalAlpha = s.wmOpacity / 100;
-    ctx.font = `${fontSize}px 'DM Sans', sans-serif`;
-    ctx.fillStyle = '#fff';
-    ctx.shadowColor = 'rgba(0,0,0,0.6)';
-    ctx.shadowBlur = 4;
+    ctx.font = `${weight} ${fontSize}px 'SUIT', 'Apple SD Gothic Neo', sans-serif`;
+    ctx.fillStyle = s.wmColor || '#FFFFFF';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = Math.max(2, fontSize * 0.15);
     const tw = ctx.measureText(s.wmText).width;
-    const pad = fontSize * 0.6;
+    const pad = fontSize * 0.8;
     let tx, ty;
     switch(s.wmPos) {
       case 'tl': tx = pad; ty = fontSize + pad; break;
@@ -1476,8 +1494,8 @@ function drawImageCustom(canvas, img, w, h, s) {
       case 'tr': tx = w - tw - pad; ty = fontSize + pad; break;
       case 'bl': tx = pad; ty = h - pad; break;
       case 'bc': tx = (w - tw) / 2; ty = h - pad; break;
-      case 'br': default: tx = w - tw - pad; ty = h - pad; break;
       case 'mc': tx = (w - tw) / 2; ty = (h + fontSize) / 2; break;
+      case 'br': default: tx = w - tw - pad; ty = h - pad; break;
     }
     ctx.fillText(s.wmText, tx, ty);
     ctx.restore();
@@ -1501,9 +1519,6 @@ document.querySelectorAll('.pos-btn').forEach(btn => {
 
 // 슬라이더들
 const sliders = [
-  { id:'offsetX',    key:'offsetX',    valId:'offsetXVal',    suffix:'%' },
-  { id:'offsetY',    key:'offsetY',    valId:'offsetYVal',    suffix:'%' },
-  { id:'zoomLevel',  key:'zoom',       valId:'zoomVal',       suffix:'%' },
   { id:'brightness', key:'brightness', valId:'brightnessVal', suffix:'%' },
   { id:'contrast',   key:'contrast',   valId:'contrastVal',   suffix:'%' },
   { id:'saturation', key:'saturation', valId:'saturationVal', suffix:'%' },
@@ -1540,6 +1555,31 @@ document.querySelectorAll('[data-wpos]').forEach(btn => {
     btn.classList.add('active');
     applyToScope('wmPos', btn.dataset.wpos);
   });
+});
+
+// 텍스트 색상 스와치
+document.querySelectorAll('[data-wmcolor]').forEach(sw => {
+  sw.addEventListener('click', () => {
+    document.querySelectorAll('[data-wmcolor]').forEach(x => x.classList.remove('active'));
+    sw.classList.add('active');
+    applyToScope('wmColor', sw.dataset.wmcolor);
+  });
+});
+document.getElementById('wmCustomColor').addEventListener('input', function() {
+  document.querySelectorAll('[data-wmcolor]').forEach(x => x.classList.remove('active'));
+  applyToScope('wmColor', this.value);
+});
+
+// 텍스트 굵기
+document.getElementById('wmWeightNormal').addEventListener('click', () => {
+  document.getElementById('wmWeightNormal').classList.add('active');
+  document.getElementById('wmWeightBold').classList.remove('active');
+  applyToScope('wmBold', false);
+});
+document.getElementById('wmWeightBold').addEventListener('click', () => {
+  document.getElementById('wmWeightBold').classList.add('active');
+  document.getElementById('wmWeightNormal').classList.remove('active');
+  applyToScope('wmBold', true);
 });
 
 // 채널 네비
