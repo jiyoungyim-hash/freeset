@@ -1,78 +1,5 @@
 import type { CustomSetting, CropMode } from './types';
 
-export interface AiExpandInput {
-  blob: Blob
-  left: number
-  right: number
-  up: number
-  down: number
-  isNoOp: boolean
-}
-
-export async function prepareAiExpandBlob(
-  img: HTMLImageElement,
-  targetW: number,
-  targetH: number,
-): Promise<AiExpandInput> {
-  const scale = Math.min(targetW / img.naturalWidth, targetH / img.naturalHeight)
-  const scaledW = Math.round(img.naturalWidth * scale)
-  const scaledH = Math.round(img.naturalHeight * scale)
-
-  const totalPadW = targetW - scaledW
-  const totalPadH = targetH - scaledH
-  const left = Math.floor(totalPadW / 2)
-  const right = totalPadW - left
-  const up = Math.floor(totalPadH / 2)
-  const down = totalPadH - up
-
-  const canvas = document.createElement('canvas')
-  canvas.width = scaledW
-  canvas.height = scaledH
-  const ctx = canvas.getContext('2d')!
-  ctx.drawImage(img, 0, 0, scaledW, scaledH)
-
-  return new Promise(resolve => {
-    canvas.toBlob(blob => {
-      resolve({ blob: blob!, left, right, up, down, isNoOp: totalPadW === 0 && totalPadH === 0 })
-    }, 'image/png')
-  })
-}
-
-export async function aiExpandImage(
-  img: HTMLImageElement,
-  targetW: number,
-  targetH: number,
-): Promise<string> {
-  const input = await prepareAiExpandBlob(img, targetW, targetH)
-
-  if (input.isNoOp) {
-    const canvas = document.createElement('canvas')
-    canvas.width = targetW
-    canvas.height = targetH
-    canvas.getContext('2d')!.drawImage(img, 0, 0, targetW, targetH)
-    return new Promise(resolve => canvas.toBlob(b => {
-      const reader = new FileReader()
-      reader.onload = e => resolve(e.target!.result as string)
-      reader.readAsDataURL(b!)
-    }, 'image/png'))
-  }
-
-  const form = new FormData()
-  form.append('image', input.blob, 'image.png')
-  form.append('left', String(input.left))
-  form.append('right', String(input.right))
-  form.append('up', String(input.up))
-  form.append('down', String(input.down))
-
-  const res = await fetch('/api/ai-expand', { method: 'POST', body: form })
-  if (!res.ok) {
-    const { error } = await res.json()
-    throw new Error(error ?? 'AI 배경 확장 실패')
-  }
-  const { dataUrl } = await res.json()
-  return dataUrl
-}
-
 export function extractEdgeColor(img: HTMLImageElement): string {
   const size = 80;
   const tmp = document.createElement('canvas');
@@ -109,6 +36,81 @@ export function drawBgBlur(ctx: CanvasRenderingContext2D, img: HTMLImageElement,
   ctx.globalAlpha = 1;
 }
 
+function drawMirrors(
+  ctx: CanvasRenderingContext2D,
+  img: HTMLImageElement,
+  cw: number, ch: number,
+  dx: number, dy: number, dw: number, dh: number,
+) {
+  // 좌우 미러
+  if (dx > 0) {
+    // 왼쪽: 이미지 좌측 끝을 x=dx에 붙이고 좌→우 반사
+    ctx.save()
+    ctx.beginPath(); ctx.rect(0, 0, dx, ch); ctx.clip()
+    ctx.translate(2 * dx, 0); ctx.scale(-1, 1)
+    ctx.drawImage(img, dx, dy, dw, dh)
+    ctx.restore()
+    // 오른쪽: 이미지 우측 끝을 x=dx+dw에 붙이고 우→좌 반사
+    ctx.save()
+    ctx.beginPath(); ctx.rect(dx + dw, 0, cw - dx - dw, ch); ctx.clip()
+    ctx.translate(2 * (dx + dw), 0); ctx.scale(-1, 1)
+    ctx.drawImage(img, dx, dy, dw, dh)
+    ctx.restore()
+  }
+  // 상하 미러
+  if (dy > 0) {
+    ctx.save()
+    ctx.beginPath(); ctx.rect(0, 0, cw, dy); ctx.clip()
+    ctx.translate(0, 2 * dy); ctx.scale(1, -1)
+    ctx.drawImage(img, dx, dy, dw, dh)
+    ctx.restore()
+
+    ctx.save()
+    ctx.beginPath(); ctx.rect(0, dy + dh, cw, ch - dy - dh); ctx.clip()
+    ctx.translate(0, 2 * (dy + dh)); ctx.scale(1, -1)
+    ctx.drawImage(img, dx, dy, dw, dh)
+    ctx.restore()
+  }
+}
+
+export function drawSmartFill(
+  ctx: CanvasRenderingContext2D,
+  img: HTMLImageElement,
+  cw: number,
+  ch: number,
+) {
+  const scale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight)
+  const dw = img.naturalWidth * scale
+  const dh = img.naturalHeight * scale
+  const dx = (cw - dw) / 2
+  const dy = (ch - dh) / 2
+
+  if (dx <= 1 && dy <= 1) {
+    ctx.drawImage(img, dx, dy, dw, dh)
+    return
+  }
+
+  // 1단계: 블러 배경 (베이스)
+  drawBgBlur(ctx, img, cw, ch)
+
+  // 2단계: 미러 반사로 채우기
+  drawMirrors(ctx, img, cw, ch, dx, dy, dw, dh)
+
+  // 3단계: 미러 위에 부드러운 블러 오버레이로 경계 자연스럽게
+  const bgScale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight)
+  const bgW = img.naturalWidth * bgScale
+  const bgH = img.naturalHeight * bgScale
+  ctx.save()
+  ctx.globalAlpha = 0.38
+  ctx.filter = 'blur(18px) saturate(1.15)'
+  ctx.drawImage(img, (cw - bgW) / 2, (ch - bgH) / 2, bgW, bgH)
+  ctx.restore()
+  ctx.filter = 'none'
+
+  // 4단계: 원본 이미지 위에 선명하게
+  ctx.drawImage(img, dx, dy, dw, dh)
+}
+
 export function drawImage(
   canvas: HTMLCanvasElement,
   img: HTMLImageElement,
@@ -123,6 +125,11 @@ export function drawImage(
 
   if (mode === 'stretch') {
     ctx.drawImage(img, 0, 0, w, h);
+    return;
+  }
+
+  if (mode === 'smart-fill') {
+    drawSmartFill(ctx, img, w, h);
     return;
   }
 

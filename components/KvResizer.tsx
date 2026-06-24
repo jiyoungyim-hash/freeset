@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import type { Preset, TextLayer, CustomSetting, OutputFormat, CropMode, ActiveTab } from '@/lib/types'
 import { PRESETS, CH_LABELS, CH_ORDER, MIME, EXT } from '@/lib/constants'
-import { drawImage, drawImageCustom, aiExpandImage } from '@/lib/canvas'
+import { drawImage, drawImageCustom } from '@/lib/canvas'
 import Header from './Header'
 import ExportSheet from './ExportSheet'
 
@@ -38,7 +38,6 @@ export default function KvResizer() {
   const [dragover, setDragover] = useState(false)
   const [fileKey, setFileKey] = useState(0)
   const [exporting, setExporting] = useState(false)
-  const [aiProcessing, setAiProcessing] = useState(false)
   const [customSettings, setCustomSettings] = useState<Record<string, CustomSetting>>({})
 
   const showToast = useCallback((msg: string) => {
@@ -87,32 +86,8 @@ export default function KvResizer() {
 
   const sheetPresets = PRESETS.filter(p => selectedIds.has(p.id))
 
-  const triggerDownload = useCallback((dataUrl: string, filename: string) => {
-    const a = document.createElement('a')
-    a.href = dataUrl
-    a.download = filename
-    a.click()
-  }, [])
-
-  const downloadOne = useCallback(async (preset: Preset, s?: CustomSetting) => {
+  const downloadOne = useCallback((preset: Preset, s?: CustomSetting) => {
     if (!srcImage) return
-    const filename = `larosee_kv_${preset.id}_${preset.w}x${preset.h}.${EXT[outputFormat]}`
-
-    if (!s && cropMode === 'ai-expand') {
-      setAiProcessing(true)
-      showToast(`${preset.name} AI 처리 중...`)
-      try {
-        const dataUrl = await aiExpandImage(srcImage, preset.w, preset.h)
-        triggerDownload(dataUrl, filename)
-        showToast(`${preset.name} 저장 완료`)
-      } catch (e: unknown) {
-        showToast(`오류: ${e instanceof Error ? e.message : 'AI 처리 실패'}`)
-      } finally {
-        setAiProcessing(false)
-      }
-      return
-    }
-
     const canvas = document.createElement('canvas')
     if (s) {
       drawImageCustom(canvas, srcImage, preset.w, preset.h, s)
@@ -123,12 +98,12 @@ export default function KvResizer() {
       if (!blob) return
       const a = document.createElement('a')
       a.href = URL.createObjectURL(blob)
-      a.download = filename
+      a.download = `larosee_kv_${preset.id}_${preset.w}x${preset.h}.${EXT[outputFormat]}`
       a.click()
       URL.revokeObjectURL(a.href)
       showToast(`${preset.name} 저장 완료`)
     }, MIME[outputFormat], 0.92)
-  }, [srcImage, cropMode, outputFormat, showToast, triggerDownload])
+  }, [srcImage, cropMode, outputFormat, showToast])
 
   const handleExport = useCallback(async () => {
     if (!srcImage || sheetOpen) return
@@ -138,27 +113,8 @@ export default function KvResizer() {
   const handleSheetConfirm = useCallback(async () => {
     setSheetOpen(false)
     setExporting(true)
-    let done = 0
     for (const p of sheetPresets) {
       const s = getSettings(p.id)
-      const filename = `larosee_kv_${p.id}_${p.w}x${p.h}.${EXT[outputFormat]}`
-
-      if (cropMode === 'ai-expand') {
-        showToast(`AI 처리 중... (${done + 1}/${sheetPresets.length})`)
-        try {
-          const dataUrl = await aiExpandImage(srcImage!, p.w, p.h)
-          const a = document.createElement('a')
-          a.href = dataUrl
-          a.download = filename
-          a.click()
-        } catch (e: unknown) {
-          showToast(`오류: ${e instanceof Error ? e.message : 'AI 처리 실패'}`)
-        }
-        done++
-        await new Promise(r => setTimeout(r, 300))
-        continue
-      }
-
       await new Promise<void>(resolve => {
         const canvas = document.createElement('canvas')
         drawImageCustom(canvas, srcImage!, p.w, p.h, s)
@@ -166,17 +122,16 @@ export default function KvResizer() {
           if (!blob) { resolve(); return }
           const a = document.createElement('a')
           a.href = URL.createObjectURL(blob)
-          a.download = filename
+          a.download = `larosee_kv_${p.id}_${p.w}x${p.h}.${EXT[outputFormat]}`
           a.click()
           URL.revokeObjectURL(a.href)
-          done++
           setTimeout(resolve, 150)
         }, MIME[outputFormat], 0.92)
       })
     }
     setExporting(false)
     showToast(`${sheetPresets.length}개 파일 내보내기 완료`)
-  }, [sheetPresets, srcImage, getSettings, outputFormat, showToast, cropMode])
+  }, [sheetPresets, srcImage, getSettings, outputFormat, showToast])
 
   const actionBarVisible = !!(srcImage && selectedIds.size > 0)
 
@@ -270,18 +225,13 @@ export default function KvResizer() {
                 </div>
               </label>
               <label className="crop-row">
-                <input type="radio" name="crop" value="ai-expand" checked={cropMode === 'ai-expand'} onChange={() => setCropMode('ai-expand')} />
+                <input type="radio" name="crop" value="smart-fill" checked={cropMode === 'smart-fill'} onChange={() => setCropMode('smart-fill')} />
                 <div>
                   <div className="crop-label">
-                    AI 배경 확장
-                    <span style={{ fontSize: 10, color: '#7c3aed', fontWeight: 600, marginLeft: 6, background: 'rgba(124,58,237,0.1)', padding: '1px 6px', borderRadius: 4 }}>AI</span>
+                    스마트 배경 확장
+                    <span style={{ fontSize: 10, color: '#0ea5e9', fontWeight: 600, marginLeft: 6, background: 'rgba(14,165,233,0.12)', padding: '1px 6px', borderRadius: 4 }}>NEW</span>
                   </div>
-                  <div className="crop-desc">비율이 바뀌는 영역을 AI가 이미지에 맞게 자연스럽게 생성</div>
-                  {cropMode === 'ai-expand' && (
-                    <div style={{ fontSize: 10, color: '#7c3aed', marginTop: 4 }}>
-                      .env.local에 STABILITY_API_KEY 필요
-                    </div>
-                  )}
+                  <div className="crop-desc">이미지 가장자리를 거울 반사로 확장해 여백 없이 자연스럽게 채움</div>
                 </div>
               </label>
               <label className="crop-row">
@@ -411,10 +361,10 @@ export default function KvResizer() {
         </div>
         <button
           className="btn-export"
-          disabled={exporting || aiProcessing}
+          disabled={exporting}
           onClick={handleExport}
         >
-          {exporting ? (cropMode === 'ai-expand' ? 'AI 처리 중...' : '내보내는 중...') : aiProcessing ? 'AI 처리 중...' : '⬇ 내보내기'}
+          {exporting ? '내보내는 중...' : '⬇ 내보내기'}
         </button>
       </div>
 
@@ -445,7 +395,7 @@ function PreviewCard({
   preset: Preset
   srcImage: HTMLImageElement
   cropMode: CropMode
-  onDownload: () => void | Promise<void>
+  onDownload: () => void
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const MAX = 160
@@ -455,9 +405,7 @@ function PreviewCard({
 
   useEffect(() => {
     if (canvasRef.current) {
-      // AI expand 미리보기는 contain 방식으로 표시 (실제 AI는 다운로드 시 적용)
-      const previewMode = cropMode === 'ai-expand' ? 'contain' : cropMode
-      drawImage(canvasRef.current, srcImage, pw, ph, previewMode)
+      drawImage(canvasRef.current, srcImage, pw, ph, cropMode)
     }
   }, [srcImage, pw, ph, cropMode])
 
@@ -470,9 +418,7 @@ function PreviewCard({
         <div className="pv-ch">{CH_LABELS[preset.ch]}</div>
         <div className="pv-name">{preset.name}</div>
         <div className="pv-dim">{preset.w} × {preset.h}px</div>
-        <button className="pv-dl" onClick={onDownload}>
-          {cropMode === 'ai-expand' ? '✦ AI 저장' : '⬇ 개별 저장'}
-        </button>
+        <button className="pv-dl" onClick={onDownload}>⬇ 개별 저장</button>
       </div>
     </div>
   )
