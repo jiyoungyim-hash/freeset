@@ -1,5 +1,78 @@
 import type { CustomSetting, CropMode } from './types';
 
+export interface AiExpandInput {
+  blob: Blob
+  left: number
+  right: number
+  up: number
+  down: number
+  isNoOp: boolean
+}
+
+export async function prepareAiExpandBlob(
+  img: HTMLImageElement,
+  targetW: number,
+  targetH: number,
+): Promise<AiExpandInput> {
+  const scale = Math.min(targetW / img.naturalWidth, targetH / img.naturalHeight)
+  const scaledW = Math.round(img.naturalWidth * scale)
+  const scaledH = Math.round(img.naturalHeight * scale)
+
+  const totalPadW = targetW - scaledW
+  const totalPadH = targetH - scaledH
+  const left = Math.floor(totalPadW / 2)
+  const right = totalPadW - left
+  const up = Math.floor(totalPadH / 2)
+  const down = totalPadH - up
+
+  const canvas = document.createElement('canvas')
+  canvas.width = scaledW
+  canvas.height = scaledH
+  const ctx = canvas.getContext('2d')!
+  ctx.drawImage(img, 0, 0, scaledW, scaledH)
+
+  return new Promise(resolve => {
+    canvas.toBlob(blob => {
+      resolve({ blob: blob!, left, right, up, down, isNoOp: totalPadW === 0 && totalPadH === 0 })
+    }, 'image/png')
+  })
+}
+
+export async function aiExpandImage(
+  img: HTMLImageElement,
+  targetW: number,
+  targetH: number,
+): Promise<string> {
+  const input = await prepareAiExpandBlob(img, targetW, targetH)
+
+  if (input.isNoOp) {
+    const canvas = document.createElement('canvas')
+    canvas.width = targetW
+    canvas.height = targetH
+    canvas.getContext('2d')!.drawImage(img, 0, 0, targetW, targetH)
+    return new Promise(resolve => canvas.toBlob(b => {
+      const reader = new FileReader()
+      reader.onload = e => resolve(e.target!.result as string)
+      reader.readAsDataURL(b!)
+    }, 'image/png'))
+  }
+
+  const form = new FormData()
+  form.append('image', input.blob, 'image.png')
+  form.append('left', String(input.left))
+  form.append('right', String(input.right))
+  form.append('up', String(input.up))
+  form.append('down', String(input.down))
+
+  const res = await fetch('/api/ai-expand', { method: 'POST', body: form })
+  if (!res.ok) {
+    const { error } = await res.json()
+    throw new Error(error ?? 'AI 배경 확장 실패')
+  }
+  const { dataUrl } = await res.json()
+  return dataUrl
+}
+
 export function extractEdgeColor(img: HTMLImageElement): string {
   const size = 80;
   const tmp = document.createElement('canvas');

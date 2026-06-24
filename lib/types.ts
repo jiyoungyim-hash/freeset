@@ -33,5 +33,5 @@ export interface CustomSetting {
 }
 
 export type OutputFormat = 'jpeg' | 'png' | 'webp' | 'pop_a3';
-export type CropMode = 'contain' | 'stretch';
+export type CropMode = 'contain' | 'stretch' | 'ai-expand';
 export type ActiveTab = 'upload' | 'channel' | 'preview';
