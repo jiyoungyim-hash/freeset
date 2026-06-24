@@ -393,43 +393,51 @@ body {
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ══ 커스터마이징 시트 (전체화면 분할) ══ */
+/* ══ 내보내기 설정 시트 — Sharp Modern ══ */
 .sheet-overlay {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 300;
   opacity: 0; pointer-events: none;
-  transition: opacity 0.3s;
+  transition: opacity 0.28s ease;
 }
 .sheet-overlay.open { opacity: 1; pointer-events: all; }
 
 .custom-sheet {
   position: fixed; inset: 0;
-  background: var(--ivory);
+  background: #0f0f0f;
   z-index: 301;
   transform: translateY(100%);
-  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   display: flex; flex-direction: column;
 }
 .custom-sheet.open { transform: translateY(0); }
 
+/* ── 헤더 ── */
 .sheet-header {
-  padding: calc(var(--safe-top) + 14px) 20px 14px;
+  padding: calc(var(--safe-top) + 16px) 24px 16px;
   display: flex; align-items: center; justify-content: space-between;
   flex-shrink: 0;
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
+  background: #0f0f0f;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 .sheet-title {
   font-family: var(--font-en);
-  font-size: 18px; font-weight: 300; letter-spacing: 0.5px;
+  font-size: 15px; font-weight: 400; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(255,255,255,0.9);
 }
 .sheet-close {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: var(--stone); border: none; cursor: pointer;
+  width: 30px; height: 30px; border-radius: 4px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 15px; color: var(--muted);
+  font-size: 13px; color: rgba(255,255,255,0.5);
+  transition: all 0.15s;
 }
+.sheet-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
 
 /* ── 분할 레이아웃 ── */
 .sheet-split {
@@ -439,168 +447,256 @@ body {
   .sheet-split { flex-direction: row; }
 }
 
-/* 미리보기 패널 (위쪽 / 왼쪽) */
+/* ── 미리보기 패널 ── */
 .sheet-preview-pane {
   flex-shrink: 0;
-  height: 42vh;
-  background: #efefef;
+  height: 40vh;
+  background: #000;
   display: flex; flex-direction: column;
   overflow: hidden;
   position: relative;
 }
 @media (min-width: 640px) {
-  .sheet-preview-pane {
-    height: auto; width: 50%;
-    border-right: 1px solid var(--border);
-  }
+  .sheet-preview-pane { height: auto; width: 48%; border-right: 1px solid rgba(255,255,255,0.06); }
 }
 .sheet-preview-pane::before {
   content: '';
   position: absolute; inset: 0;
-  background: repeating-conic-gradient(#e0e0e0 0% 25%, #efefef 0% 50%) 0 0 / 16px 16px;
+  background: repeating-conic-gradient(#1a1a1a 0% 25%, #111 0% 50%) 0 0 / 20px 20px;
   pointer-events: none;
 }
 .sheet-canvas-center {
   flex: 1; display: flex; align-items: center; justify-content: center;
-  position: relative; z-index: 1;
-  padding: 16px;
+  position: relative; z-index: 1; padding: 20px;
 }
 .sheet-canvas-center canvas {
-  max-width: 100%; max-height: 100%;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  display: block;
+  max-width: 100%; max-height: 100%; display: block;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 8px 40px rgba(0,0,0,0.6);
 }
+
+/* ── 프리셋 네비 ── */
 .custom-preview-nav {
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 16px;
-  border-top: 1px solid var(--border);
-  background: rgba(242,237,232,0.95);
-  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.03);
   flex-shrink: 0; position: relative; z-index: 1;
 }
-.custom-preset-name { font-size: 12px; font-weight: 500; }
-.custom-preset-dim { font-size: 10px; color: var(--muted); }
-.nav-btns { display: flex; gap: 6px; }
+.custom-preset-name { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.8); letter-spacing: 0.3px; }
+.custom-preset-dim { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 1px; }
+.nav-btns { display: flex; gap: 5px; }
 .nav-btn {
-  width: 28px; height: 28px; border-radius: 8px;
-  border: 1px solid var(--border-strong); background: var(--white);
-  cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  cursor: pointer; font-size: 13px; color: rgba(255,255,255,0.6);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
 }
-.nav-btn:active { background: var(--stone); }
-.nav-counter { font-size: 11px; color: var(--muted); align-self: center; }
+.nav-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.nav-counter { font-size: 10px; color: rgba(255,255,255,0.3); align-self: center; font-variant-numeric: tabular-nums; }
 
-/* 컨트롤 패널 (아래쪽 / 오른쪽) */
+/* ── 컨트롤 패널 ── */
 .sheet-controls-pane {
   flex: 1; overflow-y: auto;
-  padding: 16px 20px;
-  display: flex; flex-direction: column; gap: 16px;
+  padding: 20px 20px;
+  display: flex; flex-direction: column; gap: 24px;
+  background: #141414;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
 }
+.sheet-controls-pane::-webkit-scrollbar { width: 4px; }
+.sheet-controls-pane::-webkit-scrollbar-track { background: transparent; }
+.sheet-controls-pane::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
 
-/* 컨트롤 섹션 */
-.ctrl-section { display: flex; flex-direction: column; gap: 12px; }
+/* ── 섹션 ── */
+.ctrl-section { display: flex; flex-direction: column; gap: 8px; }
 .ctrl-label {
-  font-size: 9px; font-weight: 600; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--muted);
+  font-size: 9px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.25);
+  padding-bottom: 2px;
 }
 .ctrl-sub-label {
-  font-size: 9px; font-weight: 600; letter-spacing: 1.5px;
-  text-transform: uppercase; color: var(--muted);
-  margin-top: 4px;
+  font-size: 9px; font-weight: 600; letter-spacing: 1.8px;
+  text-transform: uppercase; color: rgba(255,255,255,0.2);
+  margin-top: 6px;
 }
 .ctrl-card {
-  background: var(--white);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.07);
   padding: 14px 16px;
   display: flex; flex-direction: column; gap: 12px;
 }
 
-/* 위치 그리드 */
+/* ── 위치 그리드 ── */
 .pos-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 6px; width: 120px; margin: 0 auto;
+  gap: 5px; width: 108px; margin: 0 auto;
 }
 .pos-btn {
-  aspect-ratio: 1; border-radius: 8px;
-  border: 1px solid var(--border-strong);
-  background: var(--stone); cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; transition: all 0.15s;
-}
-.pos-btn.active { background: var(--rose-deep); border-color: var(--rose-deep); }
-.pos-btn:active { transform: scale(0.92); }
-
-/* 슬라이더 */
-.slider-row { display: flex; align-items: center; gap: 10px; }
-.slider-row label { font-size: 12px; color: var(--ink); min-width: 48px; }
-.slider-row input[type=range] {
-  flex: 1; height: 4px; accent-color: var(--rose-deep);
+  aspect-ratio: 1; border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
   cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: rgba(255,255,255,0.35);
+  transition: all 0.12s;
+}
+.pos-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+.pos-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+.pos-btn:active { transform: scale(0.9); }
+
+/* ── 슬라이더 ── */
+.slider-row { display: flex; align-items: center; gap: 10px; }
+.slider-row label { font-size: 11px; color: rgba(255,255,255,0.45); min-width: 44px; letter-spacing: 0.3px; }
+.slider-row input[type=range] {
+  flex: 1; height: 2px; accent-color: var(--blue);
+  cursor: pointer; appearance: none; -webkit-appearance: none;
+  background: rgba(255,255,255,0.12); border-radius: 1px; outline: none;
+}
+.slider-row input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(0,156,222,0.5);
+  transition: transform 0.12s;
+}
+.slider-row input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.slider-row input[type=range]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; cursor: pointer; border: none;
+  box-shadow: 0 0 0 2px rgba(0,156,222,0.5);
 }
 .slider-val {
-  font-size: 11px; color: var(--muted);
-  min-width: 36px; text-align: right;
-  font-variant-numeric: tabular-nums;
+  font-size: 10px; color: rgba(255,255,255,0.35);
+  min-width: 34px; text-align: right;
+  font-variant-numeric: tabular-nums; letter-spacing: 0.2px;
 }
 
-/* 배경색 */
-.bg-color-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+/* ── 색상 스와치 ── */
+.bg-color-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .color-swatch {
-  width: 28px; height: 28px; border-radius: 50%;
+  width: 24px; height: 24px; border-radius: 3px;
   border: 2px solid transparent; cursor: pointer;
   transition: all 0.15s; flex-shrink: 0;
 }
-.color-swatch.active { border-color: var(--ink); transform: scale(1.15); }
+.color-swatch.active { border-color: #fff; transform: scale(1.15); }
 .color-custom {
-  width: 28px; height: 28px; border-radius: 50%;
-  border: 1.5px dashed var(--border-strong); cursor: pointer;
+  width: 24px; height: 24px; border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px; color: var(--muted); overflow: hidden;
+  font-size: 12px; color: rgba(255,255,255,0.4); overflow: hidden;
 }
 .color-custom input { opacity: 0; position: absolute; width: 0; height: 0; }
 
-/* 텍스트/워터마크 */
+/* ── 텍스트 입력 ── */
 .text-input-wrap { position: relative; }
-.text-input-wrap input[type=text] {
+.text-input-wrap input[type=text],
+.text-input-wrap textarea {
   width: 100%; padding: 9px 12px;
-  border: 1px solid var(--border-strong); border-radius: 8px;
-  font-family: inherit; font-size: 13px; background: var(--ivory);
-  color: var(--ink); outline: none;
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
+  font-family: inherit; font-size: 12px;
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.85); outline: none; line-height: 1.6;
+  transition: border-color 0.15s;
 }
-.text-input-wrap input:focus { border-color: var(--rose-deep); }
+.text-input-wrap textarea { resize: vertical; min-height: 60px; }
+.text-input-wrap input:focus,
+.text-input-wrap textarea:focus { border-color: var(--blue); }
+.text-input-wrap textarea::placeholder,
+.text-input-wrap input::placeholder { color: rgba(255,255,255,0.2); }
 
-.text-pos-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.text-pos-btn {
-  padding: 5px 12px; border-radius: 6px; font-size: 11px;
-  border: 1px solid var(--border-strong); background: transparent;
-  color: var(--muted); font-family: inherit; cursor: pointer;
+/* ── 텍스트 레이어 목록 ── */
+.text-layer-list { display: flex; flex-direction: column; gap: 5px; }
+.text-layer-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  cursor: pointer; transition: all 0.12s;
 }
-.text-pos-btn.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+.text-layer-item:hover { background: rgba(255,255,255,0.07); }
+.text-layer-item.active {
+  border-color: var(--blue);
+  background: rgba(0,156,222,0.1);
+}
+.text-layer-num {
+  font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.2);
+  min-width: 14px; text-align: center; letter-spacing: 0.5px;
+}
+.text-layer-item.active .text-layer-num { color: var(--blue); }
+.text-layer-preview {
+  flex: 1; font-size: 11px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+  color: rgba(255,255,255,0.6);
+}
+.text-layer-item.active .text-layer-preview { color: rgba(255,255,255,0.9); }
+.text-layer-del {
+  background: none; border: none; color: rgba(255,255,255,0.2);
+  cursor: pointer; font-size: 13px; padding: 2px 5px;
+  border-radius: 3px; line-height: 1; transition: all 0.12s;
+}
+.text-layer-del:hover { background: rgba(255,60,60,0.2); color: #ff6b6b; }
+.btn-add-layer {
+  width: 100%; padding: 8px; border-radius: 4px;
+  border: 1px dashed rgba(255,255,255,0.15);
+  background: transparent; color: rgba(255,255,255,0.35);
+  font-size: 11px; font-weight: 600; font-family: inherit;
+  cursor: pointer; margin-top: 4px; letter-spacing: 1px;
+  transition: all 0.15s; text-transform: uppercase;
+}
+.btn-add-layer:hover { border-color: var(--blue); color: var(--blue); background: rgba(0,156,222,0.06); }
+.active-layer-controls {
+  display: flex; flex-direction: column; gap: 10px;
+  margin-top: 10px; padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── 텍스트 위치 버튼 ── */
+.text-pos-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.text-pos-btn {
+  padding: 5px 10px; border-radius: 3px; font-size: 10px; letter-spacing: 0.5px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.35); font-family: inherit; cursor: pointer;
+  transition: all 0.12s;
+}
+.text-pos-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+.text-pos-btn.active { background: #1C1C1E; border-color: rgba(255,255,255,0.3); color: #fff; }
 
 .opacity-row { display: flex; align-items: center; gap: 8px; }
 
-/* 적용 범위 토글 */
-.scope-row { display: flex; gap: 8px; margin-top: 4px; }
+/* ── 적용 범위 토글 ── */
+.scope-row { display: flex; gap: 6px; margin-top: 2px; }
 .scope-btn {
-  flex: 1; padding: 8px; border-radius: 8px; font-size: 11px; font-weight: 500;
-  border: 1px solid var(--border-strong); background: transparent;
-  color: var(--muted); font-family: inherit; cursor: pointer; text-align: center;
+  flex: 1; padding: 8px 6px; border-radius: 4px; font-size: 10px; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.3); font-family: inherit; cursor: pointer;
+  text-align: center; letter-spacing: 0.5px; transition: all 0.15s;
 }
-.scope-btn.active { background: var(--rose-deep); border-color: var(--rose-deep); color: #fff; }
+.scope-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+.scope-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
 
-
+/* ── 하단 버튼 ── */
 .btn-reset {
-  padding: 13px 18px; border-radius: var(--radius);
-  border: 1px solid var(--border-strong); background: transparent;
-  color: var(--muted); font-size: 13px; font-weight: 500;
+  padding: 12px 18px; border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.4); font-size: 12px; font-weight: 500;
   font-family: inherit; cursor: pointer; white-space: nowrap;
+  transition: all 0.15s; letter-spacing: 0.3px;
 }
+.btn-reset:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
 .btn-confirm {
-  flex: 1; padding: 13px; border-radius: var(--radius);
-  border: none; background: var(--ink); color: #fff;
-  font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer;
+  flex: 1; padding: 12px; border-radius: 4px;
+  border: none; background: var(--blue); color: #fff;
+  font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer;
+  letter-spacing: 0.5px; transition: all 0.15s;
 }
-.btn-confirm:active { background: var(--rose-deep); transform: scale(0.98); }
+.btn-confirm:hover { background: #0080b8; }
+.btn-confirm:active { transform: scale(0.98); }
 
 /* ── 폰트 역할 분리 ── */
 .header-badge,
@@ -811,10 +907,10 @@ body {
         <div class="ctrl-card">
           <div class="bg-color-row" id="bgColorRow">
             <div class="color-swatch active" data-color="auto" style="background:linear-gradient(135deg,#f9f5f0,#d4c4bc);" title="자동(엣지색)"></div>
-            <div class="color-swatch" data-color="#FFFFFF" style="background:#FFFFFF;border:1px solid #eee;"></div>
-            <div class="color-swatch" data-color="#000000" style="background:#000000;"></div>
-            <div class="color-swatch" data-color="#FAF8F5" style="background:#FAF8F5;border:1px solid #eee;"></div>
-            <div class="color-swatch" data-color="#F2EDE8" style="background:#F2EDE8;border:1px solid #eee;"></div>
+            <div class="color-swatch" data-color="#FFFFFF" style="background:#FFFFFF;border:1px solid rgba(255,255,255,0.25);"></div>
+            <div class="color-swatch" data-color="#000000" style="background:#000000;border:1px solid rgba(255,255,255,0.15);"></div>
+            <div class="color-swatch" data-color="#FAF8F5" style="background:#FAF8F5;border:1px solid rgba(255,255,255,0.2);"></div>
+            <div class="color-swatch" data-color="#F2EDE8" style="background:#F2EDE8;border:1px solid rgba(255,255,255,0.2);"></div>
             <div class="color-swatch" data-color="#009CDE" style="background:#009CDE;"></div>
             <div class="color-swatch" data-color="#C8A49A" style="background:#C8A49A;"></div>
             <div class="color-custom" title="직접 선택">
@@ -843,54 +939,83 @@ body {
             <input type="range" id="saturation" min="0" max="200" value="100" step="1">
             <span class="slider-val" id="saturationVal">100%</span>
           </div>
+          <div class="slider-row">
+            <label>투명도</label>
+            <input type="range" id="imgOpacity" min="10" max="100" value="100" step="5">
+            <span class="slider-val" id="imgOpacityVal">100%</span>
+          </div>
+          <div class="slider-row">
+            <label>줌</label>
+            <input type="range" id="imgZoom" min="50" max="200" value="100" step="1">
+            <span class="slider-val" id="imgZoomVal">100%</span>
+          </div>
         </div>
       </div>
 
-      <!-- 텍스트 -->
+      <!-- 텍스트 레이어 -->
       <div class="ctrl-section">
-        <div class="ctrl-label">텍스트</div>
+        <div class="ctrl-label">텍스트 레이어</div>
         <div class="ctrl-card">
-          <div class="text-input-wrap">
-            <input type="text" id="watermarkText" placeholder="이미지에 넣을 텍스트를 입력하세요" maxlength="80">
-          </div>
-          <div class="slider-row">
-            <label>크기</label>
-            <input type="range" id="wmSize" min="10" max="120" value="24" step="1">
-            <span class="slider-val" id="wmSizeVal">24px</span>
-          </div>
-          <div class="slider-row">
-            <label>투명도</label>
-            <input type="range" id="wmOpacity" min="5" max="100" value="100" step="5">
-            <span class="slider-val" id="wmOpacityVal">100%</span>
-          </div>
-          <!-- 텍스트 색상 -->
-          <div class="ctrl-sub-label">색상</div>
-          <div class="bg-color-row" id="wmColorRow">
-            <div class="color-swatch active" data-wmcolor="#FFFFFF" style="background:#FFFFFF;border:1px solid #ddd;" title="흰색"></div>
-            <div class="color-swatch" data-wmcolor="#000000" style="background:#000000;" title="검정"></div>
-            <div class="color-swatch" data-wmcolor="#009CDE" style="background:#009CDE;" title="라로제 블루"></div>
-            <div class="color-swatch" data-wmcolor="#C8A49A" style="background:#C8A49A;" title="라로제 로즈"></div>
-            <div class="color-swatch" data-wmcolor="#FAF8F5" style="background:#FAF8F5;border:1px solid #ddd;" title="아이보리"></div>
-            <div class="color-custom" title="직접 선택">
-              🎨<input type="color" id="wmCustomColor" value="#ffffff">
+          <!-- 레이어 목록 -->
+          <div class="text-layer-list" id="textLayerList"></div>
+          <button class="btn-add-layer" id="addTextLayer">+ 텍스트 추가</button>
+
+          <!-- 활성 레이어 편집 -->
+          <div class="active-layer-controls" id="activeLayerControls">
+            <div class="text-input-wrap">
+              <textarea id="watermarkText" placeholder="텍스트를 입력하세요&#10;줄바꿈(Enter)을 사용할 수 있어요" maxlength="300" rows="3"></textarea>
             </div>
-          </div>
-          <!-- 굵기 -->
-          <div class="ctrl-sub-label">굵기</div>
-          <div class="scope-row">
-            <button class="scope-btn active" id="wmWeightNormal">보통</button>
-            <button class="scope-btn" id="wmWeightBold">굵게</button>
-          </div>
-          <!-- 위치 -->
-          <div class="ctrl-sub-label">위치</div>
-          <div class="text-pos-row" id="wmPosRow">
-            <button class="text-pos-btn" data-wpos="tl">좌상</button>
-            <button class="text-pos-btn" data-wpos="tc">상단</button>
-            <button class="text-pos-btn" data-wpos="tr">우상</button>
-            <button class="text-pos-btn active" data-wpos="br">우하</button>
-            <button class="text-pos-btn" data-wpos="bc">하단</button>
-            <button class="text-pos-btn" data-wpos="bl">좌하</button>
-            <button class="text-pos-btn" data-wpos="mc">중앙</button>
+            <div class="slider-row">
+              <label>크기</label>
+              <input type="range" id="wmSize" min="10" max="120" value="24" step="1">
+              <span class="slider-val" id="wmSizeVal">24px</span>
+            </div>
+            <div class="slider-row">
+              <label>투명도</label>
+              <input type="range" id="wmOpacity" min="5" max="100" value="100" step="5">
+              <span class="slider-val" id="wmOpacityVal">100%</span>
+            </div>
+            <!-- 텍스트 색상 -->
+            <div class="ctrl-sub-label">색상</div>
+            <div class="bg-color-row" id="wmColorRow">
+              <div class="color-swatch active" data-wmcolor="#FFFFFF" style="background:#FFFFFF;border:1px solid rgba(255,255,255,0.25);" title="흰색"></div>
+              <div class="color-swatch" data-wmcolor="#000000" style="background:#000000;border:1px solid rgba(255,255,255,0.15);" title="검정"></div>
+              <div class="color-swatch" data-wmcolor="#009CDE" style="background:#009CDE;" title="라로제 블루"></div>
+              <div class="color-swatch" data-wmcolor="#C8A49A" style="background:#C8A49A;" title="라로제 로즈"></div>
+              <div class="color-swatch" data-wmcolor="#FAF8F5" style="background:#FAF8F5;border:1px solid rgba(255,255,255,0.2);" title="아이보리"></div>
+              <div class="color-custom" title="직접 선택">
+                🎨<input type="color" id="wmCustomColor" value="#ffffff">
+              </div>
+            </div>
+            <!-- 굵기 -->
+            <div class="ctrl-sub-label">굵기</div>
+            <div class="scope-row">
+              <button class="scope-btn active" id="wmWeightNormal">보통</button>
+              <button class="scope-btn" id="wmWeightBold">굵게</button>
+            </div>
+            <!-- 위치 -->
+            <div class="ctrl-sub-label">위치</div>
+            <div class="text-pos-row" id="wmPosRow">
+              <button class="text-pos-btn" data-wpos="tl">좌상</button>
+              <button class="text-pos-btn" data-wpos="tc">상단</button>
+              <button class="text-pos-btn" data-wpos="tr">우상</button>
+              <button class="text-pos-btn active" data-wpos="br">우하</button>
+              <button class="text-pos-btn" data-wpos="bc">하단</button>
+              <button class="text-pos-btn" data-wpos="bl">좌하</button>
+              <button class="text-pos-btn" data-wpos="mc">중앙</button>
+            </div>
+            <!-- 수동 위치 미세 조정 -->
+            <div class="ctrl-sub-label" style="margin-top:4px;">수동 위치 조정</div>
+            <div class="slider-row">
+              <label>X</label>
+              <input type="range" id="wmManualX" min="-500" max="500" value="0" step="1">
+              <span class="slider-val" id="wmManualXVal">0px</span>
+            </div>
+            <div class="slider-row">
+              <label>Y</label>
+              <input type="range" id="wmManualY" min="-500" max="500" value="0" step="1">
+              <span class="slider-val" id="wmManualYVal">0px</span>
+            </div>
           </div>
         </div>
       </div>
@@ -905,7 +1030,7 @@ body {
       </div>
 
       <!-- 하단 버튼 (컨트롤 패널 내부) -->
-      <div style="display:flex;gap:10px;padding-bottom:calc(var(--safe-bottom) + 4px);">
+      <div style="display:flex;gap:8px;padding-bottom:calc(var(--safe-bottom) + 4px);margin-top:4px;">
         <button class="btn-reset" id="sheetReset">초기화</button>
         <button class="btn-confirm" id="sheetConfirm">⬇ 이 설정으로 내보내기</button>
       </div>
@@ -1331,13 +1456,16 @@ function downloadOne(preset) {
 }
 
 // ── 커스터마이징 상태 ────────────────────────────────
-// 채널별 독립 설정 저장
-const customSettings = {}; // id → settings object
+const customSettings = {};
+const defaultTextLayer = () => ({
+  text: '', size: 24, opacity: 100, pos: 'br',
+  color: '#FFFFFF', bold: false, offsetX: 0, offsetY: 0
+});
 const defaultSettings = () => ({
   posH: 'mc', posV: 'mc',
   bgColor: 'auto',
-  brightness: 100, contrast: 100, saturation: 100,
-  wmText: '', wmSize: 24, wmOpacity: 100, wmPos: 'br', wmColor: '#FFFFFF', wmBold: false
+  brightness: 100, contrast: 100, saturation: 100, imgOpacity: 100, imgZoom: 100,
+  textLayers: [defaultTextLayer()]
 });
 
 function getSettings(id) {
@@ -1349,12 +1477,14 @@ function getSettings(id) {
 let sheetPresets = [];
 let sheetIdx = 0;
 let scopeAll = false;
+let activeLayerIdx = 0;
 
 function openSheet() {
   sheetPresets = PRESETS.filter(p => selectedIds.has(p.id));
   if (!sheetPresets.length || !srcImage) return;
   sheetIdx = 0;
   scopeAll = false;
+  activeLayerIdx = 0;
   document.getElementById('scopeCurrent').classList.add('active');
   document.getElementById('scopeAll').classList.remove('active');
   loadSheetPreset(sheetIdx);
@@ -1385,20 +1515,16 @@ function loadSheetPreset(idx) {
   document.getElementById('contrastVal').textContent = s.contrast + '%';
   document.getElementById('saturation').value = s.saturation;
   document.getElementById('saturationVal').textContent = s.saturation + '%';
-  document.getElementById('watermarkText').value = s.wmText;
-  document.getElementById('wmSize').value = s.wmSize;
-  document.getElementById('wmSizeVal').textContent = s.wmSize + 'px';
-  document.getElementById('wmOpacity').value = s.wmOpacity;
-  document.getElementById('wmOpacityVal').textContent = s.wmOpacity + '%';
+  document.getElementById('imgOpacity').value = s.imgOpacity;
+  document.getElementById('imgOpacityVal').textContent = s.imgOpacity + '%';
+  document.getElementById('imgZoom').value = s.imgZoom || 100;
+  document.getElementById('imgZoomVal').textContent = (s.imgZoom || 100) + '%';
 
   // 위치 버튼
   document.querySelectorAll('.pos-btn').forEach(b => {
-    const bh = b.dataset.pos.charAt(1) === 'l' ? 'ml' : b.dataset.pos.charAt(1) === 'r' ? 'mr' : 'mc';
-    const bv = b.dataset.pos.charAt(0) === 't' ? 'tc' : b.dataset.pos.charAt(0) === 'b' ? 'bc' : 'mc';
     const ph = s.posH === 'ml' ? 'l' : s.posH === 'mr' ? 'r' : 'c';
     const pv = s.posV === 'tc' ? 't' : s.posV === 'bc' ? 'b' : 'm';
-    const match = b.dataset.pos === pv + ph;
-    b.classList.toggle('active', match);
+    b.classList.toggle('active', b.dataset.pos === pv + ph);
   });
 
   // 배경색 스와치
@@ -1406,19 +1532,10 @@ function loadSheetPreset(idx) {
     sw.classList.toggle('active', sw.dataset.color === s.bgColor);
   });
 
-  // 워터마크 위치
-  document.querySelectorAll('[data-wpos]').forEach(b => {
-    b.classList.toggle('active', b.dataset.wpos === s.wmPos);
-  });
-
-  // 텍스트 색상
-  document.querySelectorAll('[data-wmcolor]').forEach(sw => {
-    sw.classList.toggle('active', sw.dataset.wmcolor === s.wmColor);
-  });
-
-  // 텍스트 굵기
-  document.getElementById('wmWeightNormal').classList.toggle('active', !s.wmBold);
-  document.getElementById('wmWeightBold').classList.toggle('active', s.wmBold);
+  // 텍스트 레이어 목록 렌더 + 활성 레이어 컨트롤 로드
+  if (activeLayerIdx >= s.textLayers.length) activeLayerIdx = s.textLayers.length - 1;
+  renderTextLayerList(s);
+  loadActiveLayerControls(s.textLayers[activeLayerIdx]);
 
   updateSheetPreview();
 }
@@ -1459,9 +1576,10 @@ function drawImageCustom(canvas, img, w, h, s) {
     ctx.fillRect(0, 0, w, h);
   }
 
-  // 이미지 크기 (contain)
+  // 이미지 크기 (contain + zoom)
   const iw = img.naturalWidth, ih = img.naturalHeight;
-  const baseScale = Math.min(w / iw, h / ih);
+  const zoomFactor = (s.imgZoom || 100) / 100;
+  const baseScale = Math.min(w / iw, h / ih) * zoomFactor;
   const dw = iw * baseScale;
   const dh = ih * baseScale;
 
@@ -1469,38 +1587,128 @@ function drawImageCustom(canvas, img, w, h, s) {
   const px = s.posH === 'ml' ? 0 : s.posH === 'mr' ? w - dw : (w - dw) / 2;
   const py = s.posV === 'tc' ? 0 : s.posV === 'bc' ? h - dh : (h - dh) / 2;
 
-  // 필터 적용
+  // 필터 + 투명도 적용
   ctx.save();
+  ctx.globalAlpha = (s.imgOpacity !== undefined ? s.imgOpacity : 100) / 100;
   ctx.filter = `brightness(${s.brightness}%) contrast(${s.contrast}%) saturate(${s.saturation}%)`;
   ctx.drawImage(img, px, py, dw, dh);
   ctx.restore();
 
-  // 텍스트
-  if (s.wmText) {
-    const fontSize = Math.max(8, Math.round(s.wmSize * (w / 400)));
-    const weight = s.wmBold ? '700' : '400';
+  // 텍스트 레이어 (다중)
+  const layers = s.textLayers || [];
+  layers.forEach(layer => {
+    if (!layer.text) return;
+    const lines = layer.text.split('\n');
+    const fontSize = Math.max(8, Math.round(layer.size * (w / 400)));
+    const lineH = fontSize * 1.45;
+    const weight = layer.bold ? '700' : '400';
     ctx.save();
-    ctx.globalAlpha = s.wmOpacity / 100;
+    ctx.globalAlpha = layer.opacity / 100;
     ctx.font = `${weight} ${fontSize}px 'SUIT', 'Apple SD Gothic Neo', sans-serif`;
-    ctx.fillStyle = s.wmColor || '#FFFFFF';
+    ctx.fillStyle = layer.color || '#FFFFFF';
     ctx.shadowColor = 'rgba(0,0,0,0.5)';
     ctx.shadowBlur = Math.max(2, fontSize * 0.15);
-    const tw = ctx.measureText(s.wmText).width;
+    const maxW = lines.reduce((m, l) => Math.max(m, ctx.measureText(l).width), 0);
+    const totalH = lines.length * lineH;
     const pad = fontSize * 0.8;
     let tx, ty;
-    switch(s.wmPos) {
+    switch(layer.pos) {
       case 'tl': tx = pad; ty = fontSize + pad; break;
-      case 'tc': tx = (w - tw) / 2; ty = fontSize + pad; break;
-      case 'tr': tx = w - tw - pad; ty = fontSize + pad; break;
-      case 'bl': tx = pad; ty = h - pad; break;
-      case 'bc': tx = (w - tw) / 2; ty = h - pad; break;
-      case 'mc': tx = (w - tw) / 2; ty = (h + fontSize) / 2; break;
-      case 'br': default: tx = w - tw - pad; ty = h - pad; break;
+      case 'tc': tx = (w - maxW) / 2; ty = fontSize + pad; break;
+      case 'tr': tx = w - maxW - pad; ty = fontSize + pad; break;
+      case 'bl': tx = pad; ty = h - pad - totalH + fontSize; break;
+      case 'bc': tx = (w - maxW) / 2; ty = h - pad - totalH + fontSize; break;
+      case 'mc': tx = (w - maxW) / 2; ty = (h - totalH) / 2 + fontSize; break;
+      case 'br': default: tx = w - maxW - pad; ty = h - pad - totalH + fontSize; break;
     }
-    ctx.fillText(s.wmText, tx, ty);
+    const offsetScale = w / 400;
+    tx += (layer.offsetX || 0) * offsetScale;
+    ty += (layer.offsetY || 0) * offsetScale;
+    lines.forEach((line, i) => {
+      // 줄 정렬: 중앙·우측 위치는 각 줄 개별 정렬
+      let lx = tx;
+      if (['tc','bc','mc'].includes(layer.pos)) lx = (w - ctx.measureText(line).width) / 2 + (layer.offsetX || 0) * offsetScale;
+      if (['tr','br'].includes(layer.pos)) lx = w - ctx.measureText(line).width - pad + (layer.offsetX || 0) * offsetScale;
+      ctx.fillText(line, lx, ty + i * lineH);
+    });
     ctx.restore();
-  }
+  });
 }
+
+// ── 텍스트 레이어 관리 ───────────────────────────────
+function renderTextLayerList(s) {
+  const list = document.getElementById('textLayerList');
+  list.innerHTML = '';
+  s.textLayers.forEach((layer, i) => {
+    const item = document.createElement('div');
+    item.className = 'text-layer-item' + (i === activeLayerIdx ? ' active' : '');
+    const preview = layer.text ? layer.text.replace(/\n/g, ' ↵ ') : '(빈 텍스트)';
+    item.innerHTML = `
+      <span class="text-layer-num">${i + 1}</span>
+      <span class="text-layer-preview">${preview}</span>
+      ${s.textLayers.length > 1 ? `<button class="text-layer-del" data-del="${i}">✕</button>` : ''}
+    `;
+    item.addEventListener('click', e => {
+      if (e.target.dataset.del !== undefined) return;
+      activeLayerIdx = i;
+      renderTextLayerList(currentSettings());
+      loadActiveLayerControls(currentSettings().textLayers[i]);
+    });
+    const delBtn = item.querySelector('[data-del]');
+    if (delBtn) {
+      delBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        const ids = scopeAll ? sheetPresets.map(p => p.id) : [currentPreset().id];
+        ids.forEach(id => {
+          const ls = getSettings(id).textLayers;
+          if (ls.length > 1) ls.splice(i, 1);
+        });
+        if (activeLayerIdx >= currentSettings().textLayers.length) activeLayerIdx = currentSettings().textLayers.length - 1;
+        renderTextLayerList(currentSettings());
+        loadActiveLayerControls(currentSettings().textLayers[activeLayerIdx]);
+        updateSheetPreview();
+      });
+    }
+    list.appendChild(item);
+  });
+}
+
+function loadActiveLayerControls(layer) {
+  document.getElementById('watermarkText').value = layer.text;
+  document.getElementById('wmSize').value = layer.size;
+  document.getElementById('wmSizeVal').textContent = layer.size + 'px';
+  document.getElementById('wmOpacity').value = layer.opacity;
+  document.getElementById('wmOpacityVal').textContent = layer.opacity + '%';
+  document.getElementById('wmManualX').value = layer.offsetX;
+  document.getElementById('wmManualXVal').textContent = layer.offsetX + 'px';
+  document.getElementById('wmManualY').value = layer.offsetY;
+  document.getElementById('wmManualYVal').textContent = layer.offsetY + 'px';
+  document.querySelectorAll('[data-wpos]').forEach(b => b.classList.toggle('active', b.dataset.wpos === layer.pos));
+  document.querySelectorAll('[data-wmcolor]').forEach(sw => sw.classList.toggle('active', sw.dataset.wmcolor === layer.color));
+  document.getElementById('wmWeightNormal').classList.toggle('active', !layer.bold);
+  document.getElementById('wmWeightBold').classList.toggle('active', layer.bold);
+}
+
+function applyToLayerScope(key, val) {
+  const ids = scopeAll ? sheetPresets.map(p => p.id) : [currentPreset().id];
+  ids.forEach(id => {
+    const layers = getSettings(id).textLayers;
+    const li = Math.min(activeLayerIdx, layers.length - 1);
+    layers[li][key] = val;
+  });
+  // 레이어 목록 프리뷰 갱신 (text 변경 시)
+  if (key === 'text') renderTextLayerList(currentSettings());
+  updateSheetPreview();
+}
+
+document.getElementById('addTextLayer').addEventListener('click', () => {
+  const ids = scopeAll ? sheetPresets.map(p => p.id) : [currentPreset().id];
+  ids.forEach(id => getSettings(id).textLayers.push(defaultTextLayer()));
+  activeLayerIdx = currentSettings().textLayers.length - 1;
+  renderTextLayerList(currentSettings());
+  loadActiveLayerControls(currentSettings().textLayers[activeLayerIdx]);
+  updateSheetPreview();
+});
 
 // ── 컨트롤 이벤트 ────────────────────────────────────
 // 위치 버튼
@@ -1517,18 +1725,32 @@ document.querySelectorAll('.pos-btn').forEach(btn => {
   });
 });
 
-// 슬라이더들
-const sliders = [
+// 슬라이더들 (이미지 보정 - applyToScope)
+const imgSliders = [
   { id:'brightness', key:'brightness', valId:'brightnessVal', suffix:'%' },
   { id:'contrast',   key:'contrast',   valId:'contrastVal',   suffix:'%' },
   { id:'saturation', key:'saturation', valId:'saturationVal', suffix:'%' },
-  { id:'wmSize',     key:'wmSize',     valId:'wmSizeVal',     suffix:'px' },
-  { id:'wmOpacity',  key:'wmOpacity',  valId:'wmOpacityVal',  suffix:'%' },
+  { id:'imgOpacity', key:'imgOpacity', valId:'imgOpacityVal', suffix:'%' },
+  { id:'imgZoom',    key:'imgZoom',    valId:'imgZoomVal',    suffix:'%' },
 ];
-sliders.forEach(({ id, key, valId, suffix }) => {
+imgSliders.forEach(({ id, key, valId, suffix }) => {
   document.getElementById(id).addEventListener('input', function() {
     document.getElementById(valId).textContent = this.value + suffix;
     applyToScope(key, Number(this.value));
+  });
+});
+
+// 슬라이더들 (활성 텍스트 레이어 - applyToLayerScope)
+const layerSliders = [
+  { id:'wmSize',    key:'size',    valId:'wmSizeVal',    suffix:'px' },
+  { id:'wmOpacity', key:'opacity', valId:'wmOpacityVal', suffix:'%' },
+  { id:'wmManualX', key:'offsetX', valId:'wmManualXVal', suffix:'px' },
+  { id:'wmManualY', key:'offsetY', valId:'wmManualYVal', suffix:'px' },
+];
+layerSliders.forEach(({ id, key, valId, suffix }) => {
+  document.getElementById(id).addEventListener('input', function() {
+    document.getElementById(valId).textContent = this.value + suffix;
+    applyToLayerScope(key, Number(this.value));
   });
 });
 
@@ -1545,15 +1767,15 @@ document.getElementById('customBgColor').addEventListener('input', function() {
   applyToScope('bgColor', this.value);
 });
 
-// 워터마크
+// 텍스트 입력 (textarea)
 document.getElementById('watermarkText').addEventListener('input', function() {
-  applyToScope('wmText', this.value);
+  applyToLayerScope('text', this.value);
 });
 document.querySelectorAll('[data-wpos]').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('[data-wpos]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    applyToScope('wmPos', btn.dataset.wpos);
+    applyToLayerScope('pos', btn.dataset.wpos);
   });
 });
 
@@ -1562,24 +1784,24 @@ document.querySelectorAll('[data-wmcolor]').forEach(sw => {
   sw.addEventListener('click', () => {
     document.querySelectorAll('[data-wmcolor]').forEach(x => x.classList.remove('active'));
     sw.classList.add('active');
-    applyToScope('wmColor', sw.dataset.wmcolor);
+    applyToLayerScope('color', sw.dataset.wmcolor);
   });
 });
 document.getElementById('wmCustomColor').addEventListener('input', function() {
   document.querySelectorAll('[data-wmcolor]').forEach(x => x.classList.remove('active'));
-  applyToScope('wmColor', this.value);
+  applyToLayerScope('color', this.value);
 });
 
 // 텍스트 굵기
 document.getElementById('wmWeightNormal').addEventListener('click', () => {
   document.getElementById('wmWeightNormal').classList.add('active');
   document.getElementById('wmWeightBold').classList.remove('active');
-  applyToScope('wmBold', false);
+  applyToLayerScope('bold', false);
 });
 document.getElementById('wmWeightBold').addEventListener('click', () => {
   document.getElementById('wmWeightBold').classList.add('active');
   document.getElementById('wmWeightNormal').classList.remove('active');
-  applyToScope('wmBold', true);
+  applyToLayerScope('bold', true);
 });
 
 // 채널 네비
@@ -1608,6 +1830,7 @@ document.getElementById('scopeAll').addEventListener('click', () => {
 document.getElementById('sheetReset').addEventListener('click', () => {
   const ids = scopeAll ? sheetPresets.map(p => p.id) : [currentPreset().id];
   ids.forEach(id => { customSettings[id] = defaultSettings(); });
+  activeLayerIdx = 0;
   loadSheetPreset(sheetIdx);
 });
 
