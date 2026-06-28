@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>La Rosée — Visual Freeset</title>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Suit-Regular.woff2');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* SUIT 한글 */
+@font-face {
+  font-family: 'SUIT';
+  src: url('https://cdn.jsdelivr.net/gh/webfontworld/sunn/SUIT-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal;
+}
+@font-face {
+  font-family: 'SUIT';
+  src: url('https://cdn.jsdelivr.net/gh/webfontworld/sunn/SUIT-Medium.woff2') format('woff2');
+  font-weight: 500; font-style: normal;
+}
+@font-face {
+  font-family: 'SUIT';
+  src: url('https://cdn.jsdelivr.net/gh/webfontworld/sunn/SUIT-SemiBold.woff2') format('woff2');
+  font-weight: 600; font-style: normal;
+}
+
+:root {
+  --ivory: #FAF8F5;
+  --stone: #F2EDE8;
+  --rose: #66C7EF;
+  --rose-deep: #009CDE;
+  --blue: #009CDE;
+  --blue-light: #E8F6FD;
+  --ink: #1C1C1E;
+  --muted: #8E8E93;
+  --border: rgba(28,28,30,0.1);
+  --border-strong: rgba(28,28,30,0.18);
+  --white: #FFFFFF;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --font-en: 'SUIT', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  --font-kr: 'SUIT', 'Apple SD Gothic Neo', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: 'SUIT', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── 헤더 ── */
+.header {
+  padding: calc(var(--safe-top) + 36px) 24px 36px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.brand-name {
+  display: none;
+  font-family: var(--font-en);
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  color: var(--ink);
+  line-height: 1;
+}
+.brand-name em {
+  font-style: italic;
+  color: var(--rose-deep);
+}
+
+.brand-logo {
+  height: 54px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+.header-badge {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--blue);
+  font-family: var(--font-en);
+}
+
+/* ── 탭 ── */
+.tabs {
+  display: flex;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 112px;
+  z-index: 99;
+  padding: 0 24px;
+  gap: 0;
+}
+.tab {
+  flex: 1;
+  padding: 15px 0;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-bottom: 2.5px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.tab.active { color: var(--rose-deep); border-bottom-color: var(--rose-deep); }
+
+/* ── 패널 ── */
+.panel { display: none; flex: 1; flex-direction: column; }
+.panel.active { display: flex; }
+
+/* ══ 패널 1: 업로드 ══ */
+.upload-panel {
+  padding: 24px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+}
+.upload-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 420px;
+  flex-shrink: 0;
+}
+.upload-zone-wrap {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+}
+
+.upload-zone {
+  border: 1.5px dashed var(--rose);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  background: var(--white);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.upload-zone.has-image { border-style: solid; }
+.upload-zone.has-image input { pointer-events: none; }
+.upload-zone:active, .upload-zone.dragover { border-color: var(--rose-deep); background: #E8F6FD; }
+.upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.upload-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.6; }
+.upload-title {
+  font-family: var(--font-en);
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+.upload-hint { font-size: 18px; color: var(--muted); line-height: 1.6; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.preview-img { width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; inset: 0; }
+.preview-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 16px;
+  background: var(--stone);
+  position: absolute; bottom: 0; left: 0; right: 0;
+  z-index: 1;
+}
+.preview-meta { font-size: 16px; color: var(--muted); }
+.remove-btn {
+  font-size: 18px; font-weight: 600; color: #fff;
+  background: var(--rose-deep); border: none;
+  padding: 6px 14px; border-radius: 20px;
+  font-family: inherit; cursor: pointer;
+  display: flex; align-items: center; gap: 5px;
+  transition: background 0.15s;
+}
+.remove-btn:active { background: #0080b8; }
+
+/* ── 설정 카드 ── */
+.setting-block {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.setting-head {
+  font-size: 13px; font-weight: 500; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  padding: 14px 16px 10px;
+}
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 14px; }
+.chip {
+  padding: 7px 14px; border-radius: 20px; font-size: 18px;
+  border: 1px solid var(--border-strong); background: transparent; color: var(--muted);
+  font-family: inherit; cursor: pointer; transition: all 0.15s; font-weight: 400;
+}
+.chip.active { background: var(--rose-deep); border-color: var(--rose-deep); color: #fff; }
+
+.crop-rows { display: flex; flex-direction: column; }
+.crop-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-top: 1px solid var(--border);
+  cursor: pointer;
+}
+.crop-row:first-child { border-top: none; }
+.crop-row input { accent-color: var(--rose-deep); }
+.crop-label { font-size: 20px; }
+.crop-desc { font-size: 16px; color: var(--muted); margin-top: 1px; }
+
+/* ══ 패널 2: 채널 선택 ══ */
+.channel-panel { display: flex; flex-direction: column; flex: 1; }
+
+.ch-scroll {
+  display: flex; gap: 8px;
+  padding: 14px 24px;
+  overflow-x: auto; scrollbar-width: none;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.ch-scroll::-webkit-scrollbar { display: none; }
+.ch-pill {
+  padding: 9px 18px; border-radius: 20px; font-size: 21px; font-weight: 500;
+  white-space: nowrap; border: 1px solid var(--border-strong);
+  background: transparent; color: var(--muted); font-family: inherit;
+  cursor: pointer; flex-shrink: 0; letter-spacing: 0.3px; transition: all 0.15s;
+}
+.ch-pill.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+.sel-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 24px; font-size: 16px; color: var(--muted); flex-shrink: 0;
+}
+.sel-actions { display: flex; gap: 8px; }
+.sel-btn {
+  font-size: 16px; padding: 4px 10px; border-radius: 6px;
+  border: 1px solid var(--border-strong); background: transparent;
+  color: var(--muted); font-family: inherit; cursor: pointer;
+}
+
+.preset-list { flex: 1; overflow-y: auto; padding: 0 24px 24px; }
+
+/* 채널 그룹 */
+.ch-group { margin-bottom: 20px; }
+.ch-group-title {
+  font-size: 13px; font-weight: 500; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  padding: 16px 0 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.ch-group-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.ch-group-items { display: flex; flex-direction: column; gap: 6px; }
+
+.preset-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--white);
+  cursor: pointer; transition: all 0.15s;
+}
+.preset-item.selected {
+  border-color: var(--rose-deep);
+  background: #E8F6FD;
+}
+.preset-item:active { transform: scale(0.99); }
+.preset-item input { accent-color: var(--rose-deep); width: 15px; height: 15px; }
+.preset-icon { font-size: 16px; }
+.preset-info { flex: 1; }
+.preset-name { font-size: 20px; font-weight: 500; }
+.preset-dim { font-size: 16px; color: var(--muted); margin-top: 1px; font-variant-numeric: tabular-nums; }
+.preset-ratio {
+  font-size: 15px; padding: 2px 7px; border-radius: 4px;
+  background: var(--stone); color: var(--muted); font-weight: 500;
+}
+
+/* ══ 패널 3: 미리보기 ══ */
+.preview-panel-wrap { flex: 1; overflow-y: auto; padding: 20px 24px; }
+
+.preview-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 50vh; gap: 12px; color: var(--muted); text-align: center;
+}
+.preview-empty-icon { font-size: 40px; opacity: 0.25; }
+.preview-empty-title {
+  font-family: var(--font-en);
+  font-size: 22px; font-weight: 400; color: var(--ink); opacity: 0.4;
+}
+.preview-empty-hint { font-size: 18px; line-height: 1.7; max-width: 200px; }
+
+.preview-section-title {
+  font-size: 13px; font-weight: 500; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  padding: 20px 0 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.preview-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.pv-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.pv-card:hover { border-color: var(--rose); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+.pv-card:active { border-color: var(--rose-deep); }
+
+.pv-canvas-wrap {
+  background: #f5f5f5;
+  height: 150px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.pv-canvas-wrap::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-conic-gradient(#e8e8e8 0% 25%, #f5f5f5 0% 50%) 0 0 / 16px 16px;
+  z-index: 0;
+}
+.pv-canvas-wrap canvas {
+  max-width: 100%; max-height: 100%;
+  display: block; position: relative; z-index: 1;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.pv-body { padding: 12px; }
+.pv-ch {
+  font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--rose-deep); font-weight: 600; margin-bottom: 3px;
+}
+.pv-name {
+  font-size: 18px; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.pv-dim { font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pv-dl {
+  width: 100%; margin-top: 10px; padding: 8px;
+  border-radius: 8px; border: 1px solid var(--border-strong);
+  background: transparent; color: var(--ink);
+  font-size: 16px; font-weight: 500; font-family: inherit; cursor: pointer;
+  transition: all 0.15s; letter-spacing: 0.2px;
+}
+.pv-dl:active { background: var(--rose-deep); border-color: var(--rose-deep); color: #fff; }
+
+/* ── 하단 액션바 ── */
+.action-bar {
+  display: none;
+  padding: 14px 24px calc(var(--safe-bottom) + 14px);
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  align-items: center;
+  gap: 12px;
+}
+.action-bar.visible { display: flex; }
+.action-info { flex: 1; }
+.action-count { font-size: 20px; font-weight: 500; }
+.action-count span { color: var(--rose-deep); }
+.action-hint { font-size: 15px; color: var(--muted); margin-top: 1px; }
+.btn-export {
+  padding: 13px 22px; border-radius: var(--radius); border: none;
+  background: var(--ink); color: #fff;
+  font-size: 20px; font-weight: 500; font-family: inherit; cursor: pointer;
+  white-space: nowrap; letter-spacing: 0.3px;
+}
+.btn-export:active { background: var(--rose-deep); transform: scale(0.98); }
+
+/* ── 토스트 ── */
+.toast {
+  position: fixed; bottom: calc(var(--safe-bottom) + 90px); left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: var(--ink); color: #fff;
+  padding: 10px 20px; border-radius: 30px;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.3px;
+  white-space: nowrap; opacity: 0;
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 200; pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ══ 내보내기 설정 시트 — Sharp Modern ══ */
+.sheet-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 300;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+.sheet-overlay.open { opacity: 1; pointer-events: all; }
+
+.custom-sheet {
+  position: fixed; inset: 0;
+  background: #0f0f0f;
+  z-index: 301;
+  transform: translateY(100%);
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex; flex-direction: column;
+}
+.custom-sheet.open { transform: translateY(0); }
+
+/* ── 헤더 ── */
+.sheet-header {
+  padding: calc(var(--safe-top) + 16px) 24px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+  background: #0f0f0f;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.sheet-title {
+  font-family: var(--font-en);
+  font-size: 20px; font-weight: 400; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(255,255,255,0.95);
+}
+.sheet-close {
+  width: 30px; height: 30px; border-radius: 4px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: rgba(255,255,255,0.5);
+  transition: all 0.15s;
+}
+.sheet-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+/* ── 분할 레이아웃 ── */
+.sheet-split {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+}
+@media (min-width: 640px) {
+  .sheet-split { flex-direction: row; }
+}
+
+/* ── 미리보기 패널 ── */
+.sheet-preview-pane {
+  flex-shrink: 0;
+  height: 35vh;
+  background: #000;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+@media (min-width: 640px) {
+  .sheet-preview-pane { height: auto; width: 52%; border-right: 1px solid rgba(255,255,255,0.06); }
+}
+.sheet-preview-pane::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-conic-gradient(#1a1a1a 0% 25%, #111 0% 50%) 0 0 / 20px 20px;
+  pointer-events: none;
+}
+.sheet-canvas-center {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 1; padding: 20px;
+}
+.sheet-canvas-center canvas {
+  max-width: 100%; max-height: 100%; display: block;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 8px 40px rgba(0,0,0,0.6);
+}
+
+/* ── 프리셋 네비 ── */
+.custom-preview-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.03);
+  flex-shrink: 0; position: relative; z-index: 1;
+}
+.custom-preset-name { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.8); letter-spacing: 0.3px; }
+.custom-preset-dim { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 1px; }
+.nav-btns { display: flex; gap: 5px; }
+.nav-btn {
+  width: 26px; height: 26px; border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  cursor: pointer; font-size: 13px; color: rgba(255,255,255,0.6);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.nav-counter { font-size: 10px; color: rgba(255,255,255,0.3); align-self: center; font-variant-numeric: tabular-nums; }
+
+/* ── 컨트롤 패널 ── */
+.sheet-controls-pane {
+  flex: 1; overflow-y: auto;
+  padding: 20px 20px;
+  display: flex; flex-direction: column; gap: 24px;
+  background: #141414;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+.sheet-controls-pane::-webkit-scrollbar { width: 4px; }
+.sheet-controls-pane::-webkit-scrollbar-track { background: transparent; }
+.sheet-controls-pane::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+/* ── 섹션 ── */
+.ctrl-section { display: flex; flex-direction: column; gap: 8px; }
+.ctrl-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.25);
+  padding-bottom: 2px;
+}
+.ctrl-sub-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 1.8px;
+  text-transform: uppercase; color: rgba(255,255,255,0.2);
+  margin-top: 6px;
+}
+.ctrl-card {
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+/* ── 위치 그리드 ── */
+.pos-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 5px; width: 108px; margin: 0 auto;
+}
+.pos-btn {
+  aspect-ratio: 1; border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: rgba(255,255,255,0.35);
+  transition: all 0.12s;
+}
+.pos-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+.pos-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+.pos-btn:active { transform: scale(0.9); }
+
+/* ── 슬라이더 ── */
+.slider-row { display: flex; align-items: center; gap: 10px; }
+.slider-row label { font-size: 11px; color: rgba(255,255,255,0.45); min-width: 44px; letter-spacing: 0.3px; }
+.slider-row input[type=range] {
+  flex: 1; height: 2px; accent-color: var(--blue);
+  cursor: pointer; appearance: none; -webkit-appearance: none;
+  background: rgba(255,255,255,0.12); border-radius: 1px; outline: none;
+}
+.slider-row input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(0,156,222,0.5);
+  transition: transform 0.12s;
+}
+.slider-row input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.slider-row input[type=range]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; cursor: pointer; border: none;
+  box-shadow: 0 0 0 2px rgba(0,156,222,0.5);
+}
+.slider-val {
+  font-size: 10px; color: rgba(255,255,255,0.35);
+  min-width: 34px; text-align: right;
+  font-variant-numeric: tabular-nums; letter-spacing: 0.2px;
+}
+
+/* ── 색상 스와치 ── */
+.bg-color-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.color-swatch {
+  width: 24px; height: 24px; border-radius: 3px;
+  border: 2px solid transparent; cursor: pointer;
+  transition: all 0.15s; flex-shrink: 0;
+}
+.color-swatch.active { border-color: #fff; transform: scale(1.15); }
+.color-custom {
+  width: 24px; height: 24px; border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: rgba(255,255,255,0.4); overflow: hidden;
+}
+.color-custom input { opacity: 0; position: absolute; width: 0; height: 0; pointer-events: none; }
+
+/* ── 텍스트 입력 ── */
+.text-input-wrap { position: relative; }
+.text-input-wrap input[type=text],
+.text-input-wrap textarea {
+  width: 100%; padding: 9px 12px;
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
+  font-family: inherit; font-size: 12px;
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.85); outline: none; line-height: 1.6;
+  transition: border-color 0.15s;
+}
+.text-input-wrap textarea { resize: vertical; min-height: 60px; }
+.text-input-wrap input:focus,
+.text-input-wrap textarea:focus { border-color: var(--blue); }
+.text-input-wrap textarea::placeholder,
+.text-input-wrap input::placeholder { color: rgba(255,255,255,0.2); }
+
+/* ── 텍스트 레이어 목록 ── */
+.text-layer-list { display: flex; flex-direction: column; gap: 5px; }
+.text-layer-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  cursor: pointer; transition: all 0.12s;
+}
+.text-layer-item:hover { background: rgba(255,255,255,0.07); }
+.text-layer-item.active {
+  border-color: var(--blue);
+  background: rgba(0,156,222,0.1);
+}
+.text-layer-num {
+  font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.2);
+  min-width: 14px; text-align: center; letter-spacing: 0.5px;
+}
+.text-layer-item.active .text-layer-num { color: var(--blue); }
+.text-layer-preview {
+  flex: 1; font-size: 11px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+  color: rgba(255,255,255,0.6);
+}
+.text-layer-item.active .text-layer-preview { color: rgba(255,255,255,0.9); }
+.text-layer-del {
+  background: none; border: none; color: rgba(255,255,255,0.2);
+  cursor: pointer; font-size: 13px; padding: 2px 5px;
+  border-radius: 3px; line-height: 1; transition: all 0.12s;
+}
+.text-layer-del:hover { background: rgba(255,60,60,0.2); color: #ff6b6b; }
+.btn-add-layer {
+  width: 100%; padding: 8px; border-radius: 4px;
+  border: 1px dashed rgba(255,255,255,0.15);
+  background: transparent; color: rgba(255,255,255,0.35);
+  font-size: 11px; font-weight: 600; font-family: inherit;
+  cursor: pointer; margin-top: 4px; letter-spacing: 1px;
+  transition: all 0.15s; text-transform: uppercase;
+}
+.btn-add-layer:hover { border-color: var(--blue); color: var(--blue); background: rgba(0,156,222,0.06); }
+.active-layer-controls {
+  display: flex; flex-direction: column; gap: 10px;
+  margin-top: 10px; padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── 텍스트 위치 버튼 ── */
+.text-pos-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.text-pos-btn {
+  padding: 5px 10px; border-radius: 3px; font-size: 10px; letter-spacing: 0.5px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.35); font-family: inherit; cursor: pointer;
+  transition: all 0.12s;
+}
+.text-pos-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+.text-pos-btn.active { background: #1C1C1E; border-color: rgba(255,255,255,0.3); color: #fff; }
+
+.opacity-row { display: flex; align-items: center; gap: 8px; }
+
+/* ── 적용 범위 토글 ── */
+.scope-row { display: flex; gap: 6px; margin-top: 2px; }
+.scope-btn {
+  flex: 1; padding: 8px 6px; border-radius: 4px; font-size: 10px; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.3); font-family: inherit; cursor: pointer;
+  text-align: center; letter-spacing: 0.5px; transition: all 0.15s;
+}
+.scope-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+.scope-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+/* ── 하단 버튼 ── */
+.btn-reset {
+  padding: 12px 18px; border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.4); font-size: 12px; font-weight: 500;
+  font-family: inherit; cursor: pointer; white-space: nowrap;
+  transition: all 0.15s; letter-spacing: 0.3px;
+}
+.btn-reset:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+.btn-confirm {
+  flex: 1; padding: 12px; border-radius: 4px;
+  border: none; background: var(--blue); color: #fff;
+  font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer;
+  letter-spacing: 0.5px; transition: all 0.15s;
+}
+.btn-confirm:hover { background: #0080b8; }
+.btn-confirm:active { transform: scale(0.98); }
+
+/* ── 폰트 역할 분리 ── */
+.header-badge,
+.ctrl-label,
+.preview-section-title,
+.pv-ch,
+.ch-group-title,
+.setting-head {
+  font-family: var(--font-kr);
+  letter-spacing: 1.5px;
+}
+
+/* 영문 강조 텍스트 */
+.sheet-title,
+.upload-title,
+.preview-empty-title {
+  font-family: var(--font-en);
+}
+
+/* 국문 본문 */
+.pv-name,
+.preset-name,
+.crop-label,
+.crop-desc,
+.action-count,
+.action-hint,
+.chip,
+.cat-pill,
+.ch-pill,
+.sel-btn,
+.scope-btn,
+.tab,
+.nav-counter,
+.custom-preset-name {
+  font-family: var(--font-kr);
+}
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<header class="header">
+  <div class="brand">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOsAAABHCAYAAADm1LBAAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAv+SURBVHhe7Z09V9tYGsf/8TiIBAz28jIJziY2zThN7BRJxZwxS5Vp4lSpNkC9BfAJgE8AFNvtOTiZKhWm2a1YnBMqUsROs94GKyxm5gQzyBEvluNxtpB0LQvbkvwCKH5+5+jEkcXV2/3f597nee71ta8l6SsIgrjyOPQ7CIK4mpBYCcImkFgJwiaQWAnCJpBYCcImkFgJwiaQWAnCJpBYiY5HkEpYSeb0u68cJFaio4ln8nj4eg+zW4dY+XC1BUtiJToSQSphbusQ47F98GIRYW83ggOc/rArxTVKNyQ6DV4s4tk/f0MiW4DP5cTqxDDC3m79YVcOsqxEx/HyPyJ4sYilsQGkX9y1hVBBlpXoRASpBABwc/ayVSRWiySyEhLZLwgNXkdo8HLGOIJUglCQK5yKu8txIZWPF4tIHBTY+d1dDvj6nAgNdukPbRr9uXwuJ9ycoy3n0j7Tdj1LXiwCTZRvO7GOx/YRz+T1uxlhbzc2IyP63S3j4es9JLKFtp9Hz+L2ERbeHel3n8PnciI01IWIvweTAZf+64bgxSJWEjlE/ysyq6TH53JiNtSPp/6b8Lmu6782jSCVsPIhh+Vkru653j+/Y1jhr/19R7/LFGberSCV4PkHr99tishoD9aefK/fbYjtxBpNHePj5y+IZ84Q35dF63M5MaVUzHt95c+tJpEt4OHrPfb/98/vtKWVr0Y8c4Y3mTwShxJiO6eA5r7v9V3Hx89fwItFxDNnrAX3uZxY+/n7hnsAglTC4rsjLCsxSDfnwNQPLgSHOPhcTghSCcmshGhKHgNCOefqxBDC3hu60oxJZCWMx36FIJUqzuXucoAXv2AlmWPn2YyM1B1ramOn8f0z1sBPBVzwuZzsOF78Ih9fKCFxUAAvFuFzOZF+cZcdUw0z5cvW+g/5s6b80CCH98+9mtLMYTuxqsQzeYzH9gEAU4FerE4M6w9pOdMbB4imRPb/hUcezD/2VBzTbnixCP+rXaDOfS8nc5jbOgQUgW1GblsWrCCVMB7bRyJbgJtzYP6RB7PBfv1hjGjqGHNbWWYNoxNDliw7LxYxviaHUSYDLiyPDZyznIJUgv+XXQhSyVL52l5JPZFHU8eY3vhkSqxa2l2+Sv1+BMEQpBJi6ZOKMdPyFQ2izwb7sTQ2AGjiiVbRCnUzcruuUKE0HJuR2+z/s1uHzGqZYXH7iFm1akKF0vBorWKrUUWmWu9W02wv7PwTIaoSS59CkEqI+HtYN1uQSohnzvSHXglmg/2swscz+Zrjv2osvjtCIlsAACyNDZi2yqFBrqKRmN440B9Sk1j6BAAQGuKqClVFvRb+c+sFpTqw2kVosAtuztFwY9C+K/vGWEkKAIDJgAuTARd7qYsmnD6XRcTfwz6r4jOCF4tY2JbvKezttjz+1zcSZhsztTFxd13Tf1XBpNL1n7xv7brM8v75HXz926h+d8topnwSqwkS2QLLdgl7u+HmHEwIVq3WRaK9LrNdsEVFqFAapkaYfVDuMq8rzjAjVIEbWZ2w9wamAr1t6w63q1yVZsonsZpA9fppnUmTgV72+aXG6XSVSGQlQOk6mu3eaS2hVauq8pPGwaJ2b41QG5N4Jn8pvZU3mTNMb3xinvZWo5ZfL+xohLk3eMVxd32n39UyVMcSNA4I+fMNJgCzFfIiWflQDnPMBPv0X1eFF4vsb2p5NM2gHeMaWUqV1YlhZnUWto/gf7V7oY1gIltANHWMpNLAtZp4Ji+HHS043fR8G2I1aTUaQXUshb3d54L9Uz/IlsfK2OwiWPmQw+xb2QM8/8hj2kJqnTZurvEG0M05cE/zrMx4hX0uJzafjTDB8mIRUxsH8L/axZxFz3I91ndOEE0dn9vUBtfX13g3FQCSWUmpD7I41S2+33z9aF8t/0bQOpb0PB29yT6/aaJ70wxqxYjtnGLx3RHGY/uYfXsIN+fA2pNbWLAQB9ZaQSNHTztQ44/zjzwVol1O5uB/9b+WiHb5Qw7TG5/Obc10T7XMKtPuxmP7LS+fxFoHrWOpmnUKe28wC3IZMddo6phVjGf/+g0L20eIZ/IIDXYh/de7iGgak8vE6jBl4bEHm89GKrrGUJI9xtd+bUqwS2MD2IyMnNua6fZrqVb+6sSwaQdfPUisdVAdS/VS56YVR9NlxFwjoz2sQqw9ucUalES2gPHYvmUvtUdjTYVCc4lt6tjMzTWWtC43kL1Iv7hbIVo500lOSWyE0CCHsLf7/DZS+x1boVr5U4HeijBao1h/ih0CLxbZOCaWPoH/1W7VTZt+eNFezNBAF6sQkdGbWJ0YwvwjudubyBYsX09wqOwYShw07mjRxnRbYVGmAr14//wO6ynwYrHlayYFB7swFeitGGu3knt91xEZvdlU+STWGqjxU7eSXujrc9belFY/kS003OK3ioXHHtalW07mLFl7bQYPLxYbvhetWKuN9RvBzTmw+pdyHnQs3doQS2S0p60rRkwFerH25FZT5XeMWGM7p5YG+YvbvwNKsr5+DKLftOmHFxluqIVqXdGAtVc93Ggifvwy9RlQBGamcsZ2Tk1ZSr2XudPoGLHObWWVxbGMnRPxTJ55RrUe31rMaJLcr0LMNey9wURiNaw0EyrfS705pbVQvdMAMPOg/1y4qxrT//5kOvHfw8njarfybzvwv9rFw9d7lu/dLA9f77EZY1boCLGq4vO5nKYqj2pRwlViq9XQWpB4Jm86D7edaKfOWUmo97mcLF2QF4uWLLOcvP8JUMoxGzbqV7zFRuEvXiyyZ9sKh001yg31tYYcY0as75wowyXrDrzWX80VRBVfSONAqQUvFpnTyMp4azJQzhJa37l866oXnZU1cecfe8rTAJM5U4IVlPmvaqO4+aw8Xc4I1VomDuo3cmpX2edymurxNAKrKw06xnx99cNU6lg7PGI8PNBjO7EKUklxfsgz8KFkyPBKqpx+i+2csq7pU3/tF6yWu67pxoYGOVZOLdTvtS93WUn1q/d3VlGvT5tlpL3val22+cceZh0Wto8Q2zk1dV1uzoHNyAjzvmrT//TnEZTVJPy/7LKY9Oaz26Z6JCrqsbH0yblzCFIJcWWhgeVkDm7OgaWxQVPlV3s2yazE9mu3csaRLFZtfnM99OUnDqrXRTWdsVy+9VCR7VaKMFqDqR71lmHRrwKhp9a0JqPrSb/4s6mKZYTRGky1Vq3QrhqhomYKmSGaOsbi9u8VAtcmKqj73ZwDMw/6K6bImaXas3dzDmU5l/J5w95uS/NrG12DCSbeG69ZsaMRjMqvhu3EGlXWYGqEapVZJbZzgmSdsWatvzW6npkGKm81jK7vJ293zeSNFZ2jqJF1quKZvDzeOizHX92cA77e6wgOcYj4bzZ8n6r1fJM5A3/8peJa1XM8He0x5VnWop3uZ5Va71tFaOL3cdyco8IpaRbbiZUgOpXGmkKCIC4cEitB2AQSK0HYBBIrQdgEEitB2AQSK0HYBBIrQdgEEitB2ARKirApL1Mim/oW9t4wNelg7u0hln6Uf96iHivJHBJZCUKhhMkfXIiM1p7h8iZzhn7uu5ppnFBWW4zv5eHrc7Kf1yCsQ5bVpvCfi5h/7MHqxDDSn+WfejQilj4xdVwiW8DqxDDWntzCG4P5sGnxj3PJ/XrimTzWfv6+7kQKwhgS6zfA1H2X4VzQ9Z0TzAT7DY/TM3nfhY8Gs3SMuOdy4mVKrJm7TJiDxPoN8DIlImgwEyWeyWM22H9uSpcR6+kT09PFarE8NoCvuGZ6pQ6iOiRWGzP39nfMvT3EPZez7hrBvFhEfF/+rRWh8IeptZWmNw7w8PUeggOc5alc1VAXDFvclhdNJ6xDYrUxSz/+CUs/DhhOd4tn8lidGGbjUDM/5bCq/LL4x+PmLGE0dcyWYnFzDgiF8qIBhDVIrB3Aevq4wlsbGuBMrRM1G+xHPHPWVNc14r+Jua0sFrePML3xibzBTUChG+JC4JW1mYjGIbEShE2gbjBB2AQSK0HYBBIrQdgEEitB2AQSK0HYBBIrQdgEEitB2AQSK0HYBBIrQdgEEitB2AQSK0HYBBIrQdgEEitB2AQSK0HYBBIrQdgEEitB2IT/A0eARv3ysWjQAAAAAElFTkSuQmCC" alt="LA ROSÉE PARIS" class="brand-logo">
+  </div>
+  <div class="header-badge">La Rosee Image Free Set</div>
+</header>
+
+<!-- 탭 -->
+<nav class="tabs">
+  <button class="tab active" data-tab="upload">비주얼</button>
+  <button class="tab" data-tab="channel">채널 선택</button>
+  <button class="tab" data-tab="preview">내보내기</button>
+</nav>
+
+<!-- ══ 탭 1: 비주얼 업로드 ══ -->
+<div class="panel active" id="tab-upload">
+  <div class="upload-panel">
+
+    <!-- 왼쪽: 설정 -->
+    <div class="upload-settings">
+
+      <!-- 출력 포맷 -->
+      <div class="setting-block">
+        <div class="setting-head">출력 포맷</div>
+        <div class="chip-row">
+          <button class="chip active" data-fmt="jpeg">JPG</button>
+          <button class="chip" data-fmt="png">PNG</button>
+          <button class="chip" data-fmt="webp">WEBP</button>
+          <button class="chip" data-fmt="pop_a3">POP A3</button>
+        </div>
+      </div>
+
+      <!-- 여백 처리 방식 -->
+      <div class="setting-block">
+        <div class="setting-head">비율 변환 방식</div>
+        <div class="crop-rows">
+          <label class="crop-row">
+            <input type="radio" name="crop" value="contain" checked>
+            <div>
+              <div class="crop-label">이미지 보존 <span style="font-size:10px;color:var(--rose-deep);font-weight:500;">권장</span></div>
+              <div class="crop-desc">이미지 전체 보존, 여백은 배경색으로 자연스럽게 채움</div>
+            </div>
+          </label>
+          <label class="crop-row">
+            <input type="radio" name="crop" value="stretch">
+            <div>
+              <div class="crop-label">늘리기</div>
+              <div class="crop-desc">이미지를 프레임에 맞게 늘림 (비율 변형)</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 오른쪽: 업로드 존 -->
+    <div class="upload-zone-wrap">
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept="image/*">
+        <div id="uploadPlaceholder">
+          <div class="upload-title">KeyVisual Upload</div>
+          <div class="upload-hint">JPG · PNG · WEBP<br>DRAG OR TAP TO SELECT</div>
+        </div>
+        <div id="uploadPreview" style="display:none; position:absolute; inset:0;">
+          <img id="previewImg" class="preview-img" src="" alt="">
+          <div class="preview-bar">
+            <span class="preview-meta" id="previewMeta"></span>
+            <button class="remove-btn" id="removeBtn">REMOVE IMAGE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ 탭 2: 채널 선택 ══ -->
+<div class="panel" id="tab-channel">
+  <div class="channel-panel">
+    <div class="ch-scroll" id="chScroll">
+      <button class="ch-pill active" data-ch="all">전체</button>
+      <button class="ch-pill" data-ch="web">공식홈페이지</button>
+      <button class="ch-pill" data-ch="online">브랜드스토어</button>
+      <button class="ch-pill" data-ch="offline">오프라인</button>
+      <button class="ch-pill" data-ch="sns">SNS</button>
+      <button class="ch-pill" data-ch="ad">광고매체</button>
+    </div>
+    <div class="sel-bar">
+      <span id="selCount">0개 선택</span>
+      <div class="sel-actions">
+        <button class="sel-btn" id="selAll">전체 선택</button>
+        <button class="sel-btn" id="deselAll">해제</button>
+      </div>
+    </div>
+    <div class="preset-list" id="presetList"></div>
+  </div>
+</div>
+
+<!-- ══ 탭 3: 미리보기/내보내기 ══ -->
+<div class="panel" id="tab-preview">
+  <div class="preview-panel-wrap">
+    <div class="preview-empty" id="previewEmpty">
+      <div class="preview-empty-icon">✦</div>
+      <div class="preview-empty-title">아직 선택이 없어요</div>
+      <div class="preview-empty-hint">비주얼을 올리고 채널을 선택하면 여기에 표시돼요</div>
+    </div>
+    <div class="preview-grid" id="previewGrid"></div>
+  </div>
+</div>
+
+<!-- 하단 액션바 -->
+<div class="action-bar" id="actionBar">
+  <div class="action-info">
+    <div class="action-count"><span id="actionCount">0</span>개 채널 준비됨</div>
+    <div class="action-hint">탭해서 전체 다운로드</div>
+  </div>
+  <button class="btn-export" id="exportBtn">⬇ 내보내기</button>
+</div>
+
+
+<!-- ══ 커스터마이징 바텀시트 ══ -->
+<div class="sheet-overlay" id="sheetOverlay"></div>
+<div class="custom-sheet" id="customSheet">
+  <div class="sheet-header">
+    <div class="sheet-title">Export Settings</div>
+    <button class="sheet-close" id="sheetClose">✕</button>
+  </div>
+
+  <div class="sheet-split">
+
+    <!-- ── 미리보기 패널 ── -->
+    <div class="sheet-preview-pane">
+      <div class="sheet-canvas-center">
+        <canvas id="customCanvas"></canvas>
+      </div>
+      <div class="custom-preview-nav">
+        <div>
+          <div class="custom-preset-name" id="customPresetName">—</div>
+          <div class="custom-preset-dim" id="customPresetDim">—</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="nav-counter" id="navCounter">1 / 1</span>
+          <div class="nav-btns">
+            <button class="nav-btn" id="navPrev">‹</button>
+            <button class="nav-btn" id="navNext">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 컨트롤 패널 ── -->
+    <div class="sheet-controls-pane">
+
+      <!-- 위치 조정 -->
+      <div class="ctrl-section">
+        <div class="ctrl-label">이미지 위치</div>
+        <div class="ctrl-card">
+          <div class="slider-row">
+            <label>X</label>
+            <input type="range" id="imgPosX" min="-100" max="100" value="0" step="1">
+            <span class="slider-val" id="imgPosXVal">0%</span>
+          </div>
+          <div class="slider-row">
+            <label>Y</label>
+            <input type="range" id="imgPosY" min="-100" max="100" value="0" step="1">
+            <span class="slider-val" id="imgPosYVal">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 배경색 -->
+      <div class="ctrl-section">
+        <div class="ctrl-label">여백 배경색</div>
+        <div class="ctrl-card">
+          <div class="bg-color-row" id="bgColorRow">
+            <div class="color-swatch active" data-color="auto" style="background:linear-gradient(135deg,#f9f5f0,#d4c4bc);" title="자동(엣지색)"></div>
+            <div class="color-swatch" data-color="#FFFFFF" style="background:#FFFFFF;border:1px solid rgba(255,255,255,0.25);"></div>
+            <div class="color-swatch" data-color="#000000" style="background:#000000;border:1px solid rgba(255,255,255,0.15);"></div>
+            <div class="color-swatch" data-color="#FAF8F5" style="background:#FAF8F5;border:1px solid rgba(255,255,255,0.2);"></div>
+            <div class="color-swatch" data-color="#F2EDE8" style="background:#F2EDE8;border:1px solid rgba(255,255,255,0.2);"></div>
+            <div class="color-swatch" data-color="#009CDE" style="background:#009CDE;"></div>
+            <div class="color-swatch" data-color="#C8A49A" style="background:#C8A49A;"></div>
+            <div class="color-custom" id="bgCustomColorSwatch" title="직접 선택">
+              🎨<input type="color" id="customBgColor" value="#ffffff">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 배경 투명도 -->
+      <div class="ctrl-section" id="bgOpacitySection">
+        <div class="ctrl-label">배경 투명도</div>
+        <div class="ctrl-card">
+          <div class="slider-row">
+            <label>투명도</label>
+            <input type="range" id="bgOpacity" min="0" max="100" value="100" step="1">
+            <span class="slider-val" id="bgOpacityVal">100%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 밝기·대비·채도 -->
+      <div class="ctrl-section">
+        <div class="ctrl-label">이미지 보정</div>
+        <div class="ctrl-card">
+          <div class="slider-row">
+            <label>밝기</label>
+            <input type="range" id="brightness" min="50" max="150" value="100" step="1">
+            <span class="slider-val" id="brightnessVal">100%</span>
+          </div>
+          <div class="slider-row">
+            <label>대비</label>
+            <input type="range" id="contrast" min="50" max="150" value="100" step="1">
+            <span class="slider-val" id="contrastVal">100%</span>
+          </div>
+          <div class="slider-row">
+            <label>채도</label>
+            <input type="range" id="saturation" min="0" max="200" value="100" step="1">
+            <span class="slider-val" id="saturationVal">100%</span>
+          </div>
+          <div class="slider-row">
+            <label>투명도</label>
+            <input type="range" id="imgOpacity" min="10" max="100" value="100" step="5">
+            <span class="slider-val" id="imgOpacityVal">100%</span>
+          </div>
+          <div class="slider-row">
+            <label>줌</label>
+            <input type="range" id="imgZoom" min="50" max="200" value="100" step="1">
+            <span class="slider-val" id="imgZoomVal">100%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 텍스트 레이어 -->
+      <div class="ctrl-section">
+        <div class="ctrl-label">텍스트 레이어</div>
+        <div class="ctrl-card">
+          <!-- 레이어 목록 -->
+          <div class="text-layer-list" id="textLayerList"></div>
+          <button class="btn-add-layer" id="addTextLayer">+ 텍스트 추가</button>
+
+          <!-- 활성 레이어 편집 -->
+          <div class="active-layer-controls" id="activeLayerControls">
+            <div class="text-input-wrap">
+              <textarea id="watermarkText" placeholder="텍스트를 입력하세요&#10;줄바꿈(Enter)을 사용할 수 있어요" maxlength="300" rows="3"></textarea>
+            </div>
+            <div class="slider-row">
+              <label>크기</label>
+              <input type="range" id="wmSize" min="10" max="120" value="24" step="1">
+              <span class="slider-val" id="wmSizeVal">24px</span>
+            </div>
+            <div class="slider-row">
+              <label>투명도</label>
+              <input type="range" id="wmOpacity" min="5" max="100" value="100" step="5">
+              <span class="slider-val" id="wmOpacityVal">100%</span>
+            </div>
+            <!-- 텍스트 색상 -->
+            <div class="ctrl-sub-label">색상</div>
+            <div class="bg-color-row" id="wmColorRow">
+              <div class="color-swatch active" data-wmcolor="#FFFFFF" style="background:#FFFFFF;border:1px solid rgba(255,255,255,0.25);" title="흰색"></div>
+              <div class="color-swatch" data-wmcolor="#000000" style="background:#000000;border:1px solid rgba(255,255,255,0.15);" title="검정"></div>
+              <div class="color-swatch" data-wmcolor="#009CDE" style="background:#009CDE;" title="라로제 블루"></div>
+              <div class="color-swatch" data-wmcolor="#C8A49A" style="background:#C8A49A;" title="라로제 로즈"></div>
+              <div class="color-swatch" data-wmcolor="#FAF8F5" style="background:#FAF8F5;border:1px solid rgba(255,255,255,0.2);" title="아이보리"></div>
+              <div class="color-custom" id="wmCustomColorSwatch" title="직접 선택" style="position:relative;">
+                <span id="wmCustomColorIcon">🎨</span>
+                <input type="color" id="wmCustomColor" value="#ffffff">
+              </div>
+            </div>
+            <!-- 굵기 -->
+            <div class="ctrl-sub-label">굵기</div>
+            <div class="scope-row">
+              <button class="scope-btn active" id="wmWeightNormal">보통</button>
+              <button class="scope-btn" id="wmWeightBold">굵게</button>
+            </div>
+            <!-- 그림자 -->
+            <div class="ctrl-sub-label">그림자</div>
+            <div class="scope-row">
+              <button class="scope-btn active" id="wmShadowOff">없음</button>
+              <button class="scope-btn" id="wmShadowOn">추가</button>
+            </div>
+            <!-- 위치 -->
+            <div class="ctrl-sub-label">위치</div>
+            <div class="text-pos-row" id="wmPosRow">
+              <button class="text-pos-btn" data-wpos="tl">좌상</button>
+              <button class="text-pos-btn" data-wpos="tc">상단</button>
+              <button class="text-pos-btn" data-wpos="tr">우상</button>
+              <button class="text-pos-btn active" data-wpos="br">우하</button>
+              <button class="text-pos-btn" data-wpos="bc">하단</button>
+              <button class="text-pos-btn" data-wpos="bl">좌하</button>
+              <button class="text-pos-btn" data-wpos="mc">중앙</button>
+            </div>
+            <!-- 수동 위치 미세 조정 -->
+            <div class="ctrl-sub-label" style="margin-top:4px;">수동 위치 조정</div>
+            <div class="slider-row">
+              <label>X</label>
+              <input type="range" id="wmManualX" min="-500" max="500" value="0" step="1">
+              <span class="slider-val" id="wmManualXVal">0px</span>
+            </div>
+            <div class="slider-row">
+              <label>Y</label>
+              <input type="range" id="wmManualY" min="-500" max="500" value="0" step="1">
+              <span class="slider-val" id="wmManualYVal">0px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 적용 범위 -->
+      <div class="ctrl-section">
+        <div class="ctrl-label">설정 적용 범위</div>
+        <div class="scope-row">
+          <button class="scope-btn active" id="scopeCurrent">현재 채널만</button>
+          <button class="scope-btn" id="scopeAll">전체 채널 일괄</button>
+        </div>
+      </div>
+
+      <!-- 하단 버튼 (컨트롤 패널 내부) -->
+      <div style="display:flex;gap:8px;padding-bottom:calc(var(--safe-bottom) + 4px);margin-top:4px;">
+        <button class="btn-reset" id="sheetReset">초기화</button>
+        <button class="btn-confirm" id="sheetConfirm">⬇ 이 설정으로 내보내기</button>
+      </div>
+
+    </div><!-- /sheet-controls-pane -->
+  </div><!-- /sheet-split -->
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── 라로제코리아 채널 프리셋 ──────────────────────────
+const PRESETS = [
+  // 온라인몰
+  { id:'ss_main',     name:'스마트스토어 대표이미지',  w:1000, h:1000, ch:'online', icon:'🛒', ratio:'1:1' },
+  { id:'ss_detail',   name:'스마트스토어 상세 배너',    w:860,  h:430,  ch:'online', icon:'🛒', ratio:'2:1' },
+  { id:'coupang_main',name:'쿠팡 대표이미지',           w:1000, h:1000, ch:'online', icon:'🛒', ratio:'1:1' },
+  { id:'coupang_ban', name:'쿠팡 브랜드관 배너',        w:1920, h:400,  ch:'online', icon:'🛒', ratio:'Wide' },
+  { id:'oliveyoung',  name:'올리브영 메인 배너',        w:1920, h:600,  ch:'online', icon:'🛒', ratio:'Wide' },
+  { id:'oliveyoung_s',name:'올리브영 상품이미지',       w:1200, h:1200, ch:'online', icon:'🛒', ratio:'1:1' },
+  { id:'musinsa_main',name:'무신사 브랜드관 배너',      w:1920, h:640,  ch:'online', icon:'🛒', ratio:'3:1' },
+  { id:'kakao_shop',  name:'카카오쇼핑 대표이미지',     w:800,  h:800,  ch:'online', icon:'🛒', ratio:'1:1' },
+  { id:'naver_place', name:'네이버 플레이스 커버',       w:1080, h:566,  ch:'online', icon:'🛒', ratio:'16:9' },
+
+  // 오프라인
+  { id:'dept_main',   name:'백화점 전시 패널 세로',     w:2480, h:3508, ch:'offline', icon:'🏪', ratio:'A4V' },
+  { id:'dept_wide',   name:'백화점 전시 패널 가로',     w:3508, h:2480, ch:'offline', icon:'🏪', ratio:'A4H' },
+  { id:'dept_banner', name:'매장 행잉 배너 (60×180)',   w:1772, h:5315, ch:'offline', icon:'🏪', ratio:'1:3' },
+  { id:'dept_pop',    name:'POP 세로형 (A3)',           w:3508, h:4961, ch:'offline', icon:'🏪', ratio:'A3V' },
+  { id:'counter_top', name:'카운터 탑 배너 (10×20cm)',  w:1181, h:2362, ch:'offline', icon:'🏪', ratio:'1:2' },
+  { id:'window',      name:'쇼윈도우 시트 (100×150)',   w:2953, h:4429, ch:'offline', icon:'🏪', ratio:'2:3' },
+
+  // SNS
+  { id:'ig_feed_sq',  name:'인스타그램 피드 (정방)',    w:1080, h:1080, ch:'sns', icon:'📸', ratio:'1:1' },
+  { id:'ig_feed_pt',  name:'인스타그램 피드 (세로)',    w:1080, h:1350, ch:'sns', icon:'📸', ratio:'4:5' },
+  { id:'ig_story',    name:'인스타그램 스토리/릴스',   w:1080, h:1920, ch:'sns', icon:'📸', ratio:'9:16' },
+  { id:'ig_cover',    name:'인스타그램 프로필 커버',    w:1080, h:566,  ch:'sns', icon:'📸', ratio:'16:9' },
+  { id:'ka_channel',  name:'카카오채널 커버',           w:1200, h:675,  ch:'sns', icon:'💛', ratio:'16:9' },
+  { id:'ka_post',     name:'카카오채널 포스트',         w:800,  h:800,  ch:'sns', icon:'💛', ratio:'1:1' },
+  { id:'ka_story',    name:'카카오스토리',              w:1080, h:1080, ch:'sns', icon:'💛', ratio:'1:1' },
+  { id:'naver_blog',  name:'네이버 블로그 썸네일',      w:1200, h:900,  ch:'sns', icon:'🟢', ratio:'4:3' },
+  { id:'naver_post',  name:'네이버 포스트 커버',        w:1080, h:607,  ch:'sns', icon:'🟢', ratio:'16:9' },
+  { id:'yt_thumb',    name:'유튜브 썸네일',             w:1280, h:720,  ch:'sns', icon:'▶️', ratio:'16:9' },
+  { id:'yt_banner',   name:'유튜브 채널 아트',          w:2560, h:1440, ch:'sns', icon:'▶️', ratio:'16:9' },
+
+  // 공식홈페이지
+  { id:'web_main_banner',  name:'메인 풀배너',            w:1920, h:1080, ch:'web', icon:'🌐', ratio:'16:9', url:'larosee.co.kr' },
+  { id:'web_wide_banner',  name:'와이드 섹션 배너',       w:1920, h:604,  ch:'web', icon:'🌐', ratio:'Wide', url:'larosee.co.kr' },
+  { id:'web_brand_photo',  name:'브랜드·매장 사진',       w:1920, h:1280, ch:'web', icon:'🌐', ratio:'3:2',  url:'larosee.co.kr' },
+  { id:'web_story_banner', name:'스토리 배너',            w:1600, h:480,  ch:'web', icon:'🌐', ratio:'10:3', url:'larosee.co.kr' },
+  { id:'web_sub_banner',   name:'서브 섹션 배너',         w:1280, h:720,  ch:'web', icon:'🌐', ratio:'16:9', url:'larosee.co.kr' },
+  { id:'web_card_banner',  name:'콘텐츠 카드 배너',       w:1000, h:500,  ch:'web', icon:'🌐', ratio:'2:1',  url:'larosee.co.kr' },
+  { id:'web_benefit_bar',  name:'멤버십·혜택 배너',       w:1080, h:274,  ch:'web', icon:'🌐', ratio:'4:1',  url:'larosee.co.kr' },
+
+  // 광고매체
+  { id:'disp_300x250',name:'디스플레이 광고 (300×250)', w:300,  h:250,  ch:'ad', icon:'📺', ratio:'6:5' },
+  { id:'disp_728x90', name:'디스플레이 광고 (728×90)',  w:728,  h:90,   ch:'ad', icon:'📺', ratio:'8:1' },
+  { id:'disp_320x100',name:'모바일 배너 (320×100)',     w:320,  h:100,  ch:'ad', icon:'📺', ratio:'16:5' },
+  { id:'disp_970x250',name:'빌보드 광고 (970×250)',     w:970,  h:250,  ch:'ad', icon:'📺', ratio:'Wide' },
+  { id:'kakao_moment',name:'카카오모먼트 네이티브',      w:800,  h:800,  ch:'ad', icon:'📺', ratio:'1:1' },
+  { id:'naver_gfa',   name:'네이버 GFA 피드형',         w:1200, h:628,  ch:'ad', icon:'📺', ratio:'~2:1' },
+  { id:'outdoor_6x2', name:'옥외광고 현수막 (6×2m)',    w:3543, h:1181, ch:'ad', icon:'📺', ratio:'3:1' },
+  { id:'outdoor_mega',name:'옥외광고 메가보드',         w:5906, h:3937, ch:'ad', icon:'📺', ratio:'3:2' },
+];
+
+const CH_LABELS = {
+  all: '전체',
+  online: '브랜드스토어',
+  web: '공식홈페이지',
+  offline: '오프라인',
+  sns: 'SNS',
+  ad: '광고매체'
+};
+
+const CH_GROUPS = {
+  online:  ['ss_main','ss_detail','coupang_main','coupang_ban','oliveyoung','oliveyoung_s','musinsa_main','kakao_shop','naver_place'],
+  web:     ['web_main_banner','web_wide_banner','web_brand_photo','web_story_banner','web_sub_banner','web_card_banner','web_benefit_bar'],
+  offline: ['dept_main','dept_wide','dept_banner','dept_pop','counter_top','window'],
+  sns:     ['ig_feed_sq','ig_feed_pt','ig_story','ig_cover','ka_channel','ka_post','ka_story','naver_blog','naver_post','yt_thumb','yt_banner'],
+  ad:      ['disp_300x250','disp_728x90','disp_320x100','disp_970x250','kakao_moment','naver_gfa','outdoor_6x2','outdoor_mega'],
+};
+
+// ── 상태 ──────────────────────────────────────────
+let srcImage = null;
+let selectedIds = new Set();
+let cropMode = 'contain';
+let outputFormat = 'jpeg';
+let currentCh = 'all';
+
+// ── 탭 전환 ──────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('.tab[data-tab="' + name + '"]').classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'preview') renderPreviews();
+}
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// ── 업로드 ────────────────────────────────────────
+const uploadZone  = document.getElementById('uploadZone');
+const fileInput   = document.getElementById('fileInput');
+const previewImg  = document.getElementById('previewImg');
+const uploadPreview = document.getElementById('uploadPreview');
+const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+
+uploadZone.addEventListener('click', e => { if (e.target !== document.getElementById('removeBtn') && e.target !== fileInput) fileInput.click(); });
+fileInput.addEventListener('change', e => e.target.files[0] && loadImage(e.target.files[0]));
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault(); uploadZone.classList.remove('dragover');
+  if (e.dataTransfer.files[0]) loadImage(e.dataTransfer.files[0]);
+});
+
+function loadImage(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      srcImage = img;
+      previewImg.src = ev.target.result;
+      uploadPreview.style.display = 'block';
+      uploadPlaceholder.style.display = 'none';
+      uploadZone.classList.add('has-image');
+      document.getElementById('previewMeta').textContent =
+        `${img.naturalWidth} × ${img.naturalHeight}px · ${(file.size/1024/1024).toFixed(1)}MB`;
+      updateActionBar();
+      renderPreviews();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('removeBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  e.preventDefault();
+  srcImage = null;
+  previewImg.src = '';
+  uploadPreview.style.display = 'none';
+  uploadPlaceholder.style.display = '';
+  uploadZone.classList.remove('has-image');
+  // input 초기화 — 같은 파일도 다시 선택 가능하도록
+  fileInput.value = '';
+  const newInput = fileInput.cloneNode(true);
+  fileInput.parentNode.replaceChild(newInput, fileInput);
+  newInput.addEventListener('change', e => e.target.files[0] && loadImage(e.target.files[0]));
+  updateActionBar();
+  // 미리보기 탭도 초기화
+  document.getElementById('previewGrid').innerHTML = '';
+  document.getElementById('previewEmpty').style.display = '';
+  // 비주얼 탭으로 이동
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('.tab[data-tab="upload"]').classList.add('active');
+  document.getElementById('tab-upload').classList.add('active');
+});
+
+// ── 포맷 / 크롭 ──────────────────────────────────
+document.querySelectorAll('[data-fmt]').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('[data-fmt]').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    outputFormat = c.dataset.fmt;
+  });
+});
+document.querySelectorAll('input[name="crop"]').forEach(r => {
+  r.addEventListener('change', () => cropMode = r.value);
+});
+
+// ── 채널 필터 ─────────────────────────────────────
+document.querySelectorAll('.ch-pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('.ch-pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    currentCh = p.dataset.ch;
+    renderPresets();
+  });
+});
+
+// ── 프리셋 리스트 렌더 ────────────────────────────
+function filteredPresets() {
+  return currentCh === 'all' ? PRESETS : PRESETS.filter(p => p.ch === currentCh);
+}
+
+function renderPresets() {
+  const list = document.getElementById('presetList');
+  list.innerHTML = '';
+
+  // 그룹별 렌더
+  const chOrder = currentCh === 'all'
+    ? ['web','online','offline','sns','ad']
+    : [currentCh];
+
+  chOrder.forEach(ch => {
+    const items = PRESETS.filter(p => p.ch === ch);
+    if (!items.length) return;
+
+    const group = document.createElement('div');
+    group.className = 'ch-group';
+    group.innerHTML = `<div class="ch-group-title">${CH_LABELS[ch]}</div><div class="ch-group-items"></div>`;
+    const container = group.querySelector('.ch-group-items');
+
+    items.forEach(preset => {
+      const item = document.createElement('div');
+      item.className = 'preset-item' + (selectedIds.has(preset.id) ? ' selected' : '');
+      item.innerHTML = `
+        <input type="checkbox" ${selectedIds.has(preset.id) ? 'checked' : ''} data-id="${preset.id}">
+        <div class="preset-info">
+          <div class="preset-name">${preset.name}</div>
+          <div class="preset-dim">${preset.w} × ${preset.h}px${preset.url ? ` · <span style="color:var(--rose-deep)">${preset.url}</span>` : ''}</div>
+        </div>
+        <span class="preset-ratio">${preset.ratio}</span>
+      `;
+      item.addEventListener('click', e => {
+        if (e.target.type === 'checkbox') return;
+        const cb = item.querySelector('input');
+        cb.checked = !cb.checked;
+        togglePreset(preset.id, cb.checked, item);
+      });
+      item.querySelector('input').addEventListener('change', function() {
+        togglePreset(preset.id, this.checked, item);
+      });
+      container.appendChild(item);
+    });
+    list.appendChild(group);
+  });
+  updateSelCount();
+}
+
+function togglePreset(id, checked, el) {
+  if (checked) { selectedIds.add(id); el.classList.add('selected'); }
+  else { selectedIds.delete(id); el.classList.remove('selected'); }
+  updateSelCount();
+  updateActionBar();
+  renderPreviews();
+}
+
+document.getElementById('selAll').addEventListener('click', () => {
+  filteredPresets().forEach(p => selectedIds.add(p.id));
+  renderPresets(); updateActionBar(); renderPreviews();
+});
+document.getElementById('deselAll').addEventListener('click', () => {
+  filteredPresets().forEach(p => selectedIds.delete(p.id));
+  renderPresets(); updateActionBar(); renderPreviews();
+});
+
+function updateSelCount() {
+  document.getElementById('selCount').textContent = `${selectedIds.size}개 선택`;
+}
+
+// ── 액션바 ────────────────────────────────────────
+function updateActionBar() {
+  const bar = document.getElementById('actionBar');
+  const ready = srcImage && selectedIds.size > 0;
+  bar.classList.toggle('visible', ready);
+  document.getElementById('actionCount').textContent = selectedIds.size;
+}
+
+// ── 이미지 엣지 평균색 추출 ──────────────────────────
+function extractEdgeColor(img) {
+  const size = 80;
+  const tmp = document.createElement('canvas');
+  tmp.width = tmp.height = size;
+  const ctx = tmp.getContext('2d');
+  ctx.drawImage(img, 0, 0, size, size);
+
+  // 네 엣지(상/하/좌/우) 픽셀 샘플링
+  const data = ctx.getImageData(0, 0, size, size).data;
+  let r = 0, g = 0, b = 0, count = 0;
+
+  const sample = (x, y) => {
+    const i = (y * size + x) * 4;
+    r += data[i]; g += data[i+1]; b += data[i+2]; count++;
+  };
+
+  for (let i = 0; i < size; i++) {
+    sample(i, 0);           // 상단
+    sample(i, size - 1);    // 하단
+    sample(0, i);           // 좌측
+    sample(size - 1, i);    // 우측
+  }
+
+  r = Math.round(r / count);
+  g = Math.round(g / count);
+  b = Math.round(b / count);
+  return `rgb(${r},${g},${b})`;
+}
+
+// ── 블러 배경 생성 (엣지색 + 블러로 자연스럽게) ──────
+function drawBgBlur(ctx, img, w, h) {
+  // 이미지를 배경으로 크게 깔고 블러 처리
+  const s = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+  const dw = img.naturalWidth * s;
+  const dh = img.naturalHeight * s;
+  ctx.save();
+  ctx.filter = 'blur(40px) brightness(0.85) saturate(1.2)';
+  ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+  ctx.restore();
+
+  // 살짝 반투명 오버레이로 엣지색 믹스
+  const edgeColor = extractEdgeColor(img);
+  ctx.save();
+  ctx.globalAlpha = 0.35;
+  ctx.fillStyle = edgeColor;
+  ctx.fillRect(0, 0, w, h);
+  ctx.restore();
+  ctx.globalAlpha = 1;
+}
+
+// ── 캔버스 드로우 (이미지 보존 + 배경 자동 생성) ──────
+function drawImage(canvas, img, w, h, mode) {
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  const iw = img.naturalWidth, ih = img.naturalHeight;
+
+  if (mode === 'stretch') {
+    // 늘리기: 그냥 꽉 채움
+    ctx.drawImage(img, 0, 0, w, h);
+    return;
+  }
+
+  // ── 이미지 보존 모드 (contain / cover 모두 이미지 전체 보존) ──
+  // 항상 이미지 전체를 표시하되, 남는 여백을 블러 배경으로 채움
+  const scale = Math.min(w / iw, h / ih); // 항상 contain 스케일
+  const dw = iw * scale;
+  const dh = ih * scale;
+  const dx = (w - dw) / 2;
+  const dy = (h - dh) / 2;
+
+  const hasLetterbox = dw < w || dh < h;
+
+  if (hasLetterbox) {
+    // 여백이 생기는 경우 → 블러 배경으로 자연스럽게 채우기
+    drawBgBlur(ctx, img, w, h);
+  } else {
+    // 여백 없음 → 흰 배경
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  // 이미지 원본을 중앙에 올리기
+  ctx.drawImage(img, dx, dy, dw, dh);
+}
+
+// ── 미리보기 렌더 ─────────────────────────────────
+function renderPreviews() {
+  const wrap = document.getElementById('previewGrid');
+  const empty = document.getElementById('previewEmpty');
+  const selected = PRESETS.filter(p => selectedIds.has(p.id));
+  wrap.innerHTML = '';
+
+  if (!srcImage || !selected.length) {
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  // 채널별 그룹으로 렌더
+  const chOrder = ['web','online','offline','sns','ad'];
+  chOrder.forEach(ch => {
+    const group = selected.filter(p => p.ch === ch);
+    if (!group.length) return;
+
+    // 채널 섹션 타이틀
+    const title = document.createElement('div');
+    title.className = 'preview-section-title';
+    title.textContent = CH_LABELS[ch];
+    wrap.appendChild(title);
+
+    // 그리드
+    const grid = document.createElement('div');
+    grid.className = 'preview-grid';
+
+    group.forEach(preset => {
+      const card = document.createElement('div');
+      card.className = 'pv-card';
+
+      // 캔버스 - 체커보드 배경으로 투명 영역 표시
+      const MAX = 160;
+      const s = Math.min(MAX / preset.w, MAX / preset.h, 1);
+      const pw = Math.round(preset.w * s);
+      const ph = Math.round(preset.h * s);
+      const canvas = document.createElement('canvas');
+      drawImage(canvas, srcImage, pw, ph, cropMode);
+
+      card.innerHTML = `
+        <div class="pv-canvas-wrap"></div>
+        <div class="pv-body">
+          <div class="pv-ch">${CH_LABELS[preset.ch]}</div>
+          <div class="pv-name">${preset.name}</div>
+          <div class="pv-dim">${preset.w} × ${preset.h}px</div>
+          <button class="pv-dl">⬇ 개별 저장</button>
+        </div>
+      `;
+      card.querySelector('.pv-canvas-wrap').appendChild(canvas);
+      card.querySelector('.pv-dl').addEventListener('click', () => downloadOne(preset));
+      grid.appendChild(card);
+    });
+
+    wrap.appendChild(grid);
+  });
+}
+
+// ── 다운로드 ──────────────────────────────────────
+const MIME = { jpeg:'image/jpeg', png:'image/png', webp:'image/webp', pop_a3:'image/jpeg' };
+const EXT  = { jpeg:'jpg', png:'png', webp:'webp', pop_a3:'jpg' };
+
+function downloadOne(preset) {
+  const canvas = document.createElement('canvas');
+  drawImage(canvas, srcImage, preset.w, preset.h, cropMode);
+  canvas.toBlob(blob => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `larosee_kv_${preset.id}_${preset.w}x${preset.h}.${EXT[outputFormat]}`;
+    a.click(); URL.revokeObjectURL(a.href);
+    showToast(`${preset.name} 저장 완료`);
+  }, MIME[outputFormat], 0.92);
+}
+
+// ── 커스터마이징 상태 ────────────────────────────────
+const customSettings = {};
+const defaultTextLayer = () => ({
+  text: '', size: 24, opacity: 100, pos: 'br',
+  color: '#FFFFFF', bold: false, offsetX: 0, offsetY: 0, shadow: false
+});
+const defaultSettings = () => ({
+  posX: 0, posY: 0,
+  bgColor: 'auto', bgOpacity: 100,
+  brightness: 100, contrast: 100, saturation: 100, imgOpacity: 100, imgZoom: 100,
+  textLayers: [defaultTextLayer()]
+});
+
+function getSettings(id) {
+  if (!customSettings[id]) customSettings[id] = defaultSettings();
+  return customSettings[id];
+}
+
+// ── 바텀시트 ──────────────────────────────────────────
+let sheetPresets = [];
+let sheetIdx = 0;
+let scopeAll = false;
+let activeLayerIdx = 0;
+
+function openSheet() {
+  sheetPresets = PRESETS.filter(p => selectedIds.has(p.id));
+  if (!sheetPresets.length || !srcImage) return;
+  sheetIdx = 0;
+  scopeAll = false;
+  activeLayerIdx = 0;
+  document.getElementById('scopeCurrent').classList.add('active');
+  document.getElementById('scopeAll').classList.remove('active');
+  loadSheetPreset(sheetIdx);
+  document.getElementById('sheetOverlay').classList.add('open');
+  document.getElementById('customSheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSheet() {
+  document.getElementById('sheetOverlay').classList.remove('open');
+  document.getElementById('customSheet').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function loadSheetPreset(idx) {
+  const preset = sheetPresets[idx];
+  const s = getSettings(preset.id);
+
+  // 네비 업데이트
+  document.getElementById('customPresetName').textContent = preset.name;
+  document.getElementById('customPresetDim').textContent = preset.w + ' × ' + preset.h + 'px';
+  document.getElementById('navCounter').textContent = (idx+1) + ' / ' + sheetPresets.length;
+
+  // 컨트롤 값 복원
+  document.getElementById('brightness').value = s.brightness;
+  document.getElementById('brightnessVal').textContent = s.brightness + '%';
+  document.getElementById('contrast').value = s.contrast;
+  document.getElementById('contrastVal').textContent = s.contrast + '%';
+  document.getElementById('saturation').value = s.saturation;
+  document.getElementById('saturationVal').textContent = s.saturation + '%';
+  document.getElementById('imgOpacity').value = s.imgOpacity;
+  document.getElementById('imgOpacityVal').textContent = s.imgOpacity + '%';
+  document.getElementById('imgZoom').value = s.imgZoom || 100;
+  document.getElementById('imgZoomVal').textContent = (s.imgZoom || 100) + '%';
+
+  // 이미지 위치 슬라이더
+  document.getElementById('imgPosX').value = s.posX || 0;
+  document.getElementById('imgPosXVal').textContent = (s.posX || 0) + '%';
+  document.getElementById('imgPosY').value = s.posY || 0;
+  document.getElementById('imgPosYVal').textContent = (s.posY || 0) + '%';
+
+  // 배경색 스와치
+  document.querySelectorAll('.color-swatch').forEach(sw => {
+    sw.classList.toggle('active', sw.dataset.color === s.bgColor);
+  });
+  // 배경 투명도
+  document.getElementById('bgOpacity').value = s.bgOpacity !== undefined ? s.bgOpacity : 100;
+  document.getElementById('bgOpacityVal').textContent = (s.bgOpacity !== undefined ? s.bgOpacity : 100) + '%';
+
+  // 텍스트 레이어 목록 렌더 + 활성 레이어 컨트롤 로드
+  if (activeLayerIdx >= s.textLayers.length) activeLayerIdx = s.textLayers.length - 1;
+  renderTextLayerList(s);
+  loadActiveLayerControls(s.textLayers[activeLayerIdx]);
+
+  updateSheetPreview();
+}
+
+function currentPreset() { return sheetPresets[sheetIdx]; }
+function currentSettings() { return getSettings(currentPreset().id); }
+
+function applyToScope(key, val) {
+  if (scopeAll) {
+    sheetPresets.forEach(p => { getSettings(p.id)[key] = val; });
+  } else {
+    currentSettings()[key] = val;
+  }
+  updateSheetPreview();
+}
+
+// ── 실시간 미리보기 ───────────────────────────────────
+function updateSheetPreview() {
+  const preset = currentPreset();
+  const s = currentSettings();
+  const MAX = 460;
+  const scale = Math.min(MAX / preset.w, MAX / preset.h, 1);
+  const pw = Math.round(preset.w * scale);
+  const ph = Math.round(preset.h * scale);
+  const canvas = document.getElementById('customCanvas');
+  drawImageCustom(canvas, srcImage, pw, ph, s);
+}
+
+function drawImageCustom(canvas, img, w, h, s) {
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+
+  // 배경
+  const bgAlpha = (s.bgOpacity !== undefined ? s.bgOpacity : 100) / 100;
+  if (s.bgColor === 'auto') {
+    ctx.save();
+    ctx.globalAlpha = bgAlpha;
+    drawBgBlur(ctx, img, w, h);
+    ctx.restore();
+  } else {
+    ctx.save();
+    ctx.globalAlpha = bgAlpha;
+    ctx.fillStyle = s.bgColor;
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+  }
+
+  // 이미지 크기 (contain + zoom)
+  const iw = img.naturalWidth, ih = img.naturalHeight;
+  const zoomFactor = (s.imgZoom || 100) / 100;
+  const baseScale = Math.min(w / iw, h / ih) * zoomFactor;
+  const dw = iw * baseScale;
+  const dh = ih * baseScale;
+
+  // 위치 (posX/posY: -100~100%, 0 = 중앙)
+  const px = (w - dw) / 2 + ((s.posX || 0) / 100) * (w / 2);
+  const py = (h - dh) / 2 + ((s.posY || 0) / 100) * (h / 2);
+
+  // 필터 + 투명도 적용
+  ctx.save();
+  ctx.globalAlpha = (s.imgOpacity !== undefined ? s.imgOpacity : 100) / 100;
+  ctx.filter = `brightness(${s.brightness}%) contrast(${s.contrast}%) saturate(${s.saturation}%)`;
+  ctx.drawImage(img, px, py, dw, dh);
+  ctx.restore();
+
+  // 텍스트 레이어 (다중)
+  const layers = s.textLayers || [];
+  layers.forEach(layer => {
+    if (!layer.text) return;
+    const lines = layer.text.split('\n');
+    const fontSize = Math.max(8, Math.round(layer.size * (w / 400)));
+    const lineH = fontSize * 1.45;
+    const weight = layer.bold ? '700' : '400';
+    ctx.save();
+    ctx.globalAlpha = layer.opacity / 100;
+    ctx.font = `${weight} ${fontSize}px 'SUIT', 'Apple SD Gothic Neo', sans-serif`;
+    ctx.fillStyle = layer.color || '#FFFFFF';
+    if (layer.shadow) {
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.shadowBlur = Math.max(2, fontSize * 0.15);
+    } else {
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+    }
+    const maxW = lines.reduce((m, l) => Math.max(m, ctx.measureText(l).width), 0);
+    const totalH = lines.length * lineH;
+    const pad = fontSize * 0.8;
+    let tx, ty;
+    switch(layer.pos) {
+      case 'tl': tx = pad; ty = fontSize + pad; break;
+      case 'tc': tx = (w - maxW) / 2; ty = fontSize + pad; break;
+      case 'tr': tx = w - maxW - pad; ty = fontSize + pad; break;
+      case 'bl': tx = pad; ty = h - pad - totalH + fontSize; break;
+      case 'bc': tx = (w - maxW) / 2; ty = h - pad - totalH + fontSize; break;
+      case 'mc': tx = (w - maxW) / 2; ty = (h - totalH) / 2 + fontSize; break;
+      case 'br': default: tx = w - maxW - pad; ty = h - pad - totalH + fontSize; break;
+    }
+    const offsetScale = w / 400;
+    tx += (layer.offsetX || 0) * offsetScale;
+    ty += (layer.offsetY || 0) * offsetScale;
+    lines.forEach((line, i) => {
+      // 줄 정렬: 중앙·우측 위치는 각 줄 개별 정렬
+      let lx = tx;
+      if (['tc','bc','mc'].includes(layer.pos)) lx = (w - ctx.measureText(line).width) / 2 + (layer.offsetX || 0) * offsetScale;
+      if (['tr','br'].includes(layer.pos)) lx = w - ctx.measureText(line).width - pad + (layer.offsetX || 0) * offsetScale;
+      ctx.fillText(line, lx, ty + i * lineH);
+    });
+    ctx.restore();
+  });
+}
+
+// ── 텍스트 레이어 관리 ───────────────────────────────
+function renderTextLayerList(s) {
+  const list = document.getElementById('textLayerList');
+  list.innerHTML = '';
+  s.textLayers.forEach((layer, i) => {
+    const item = document.createElement('div');
+    item.className = 'text-layer-item' + (i === activeLayerIdx ? ' active' : '');
+    const preview = layer.text ? layer.text.replace(/\n/g, ' ↵ ') : '(빈 텍스트)';
+    item.innerHTML = `
+      <span class="text-layer-num">${i + 1}</span>
+      <span class="text-layer-preview">${preview}</span>
+      ${s.textLayers.length > 1 ? `<button class="text-layer-del" data-del="${i}">✕</button>` : ''}
+    `;
+    item.addEventListener('click', e => {
+      if (e.target.dataset.del !== undefined) return;
+      activeLayerIdx = i;
+      renderTextLayerList(currentSettings());
+      loadActiveLayerControls(currentSettings().textLayers[i]);
+    });
+    const delBtn = item.querySelector('[data-del]');
+    if (delBtn) {
+      delBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        const ids = scopeAll ? sheetPresets.map(p => p.id) : [currentPreset().id];
+        ids.forEach(id => {
+          const ls = getSettings(id).textLayers;
+          if (ls.length > 1) ls.splice(i, 1);
+        });
+        if (activeLayerIdx >= currentSettings().textLayers.length) activeLayerIdx = currentSettings().textLayers.length - 1;
+        renderTextLayerList(currentSettings());
+        loadActiveLayerControls(currentSettings().textLayers[activeLayerIdx]);
+        updateSheetPreview();
+      });
+    }
+    list.appendChild(item);
+  });
+}
+
+function loadActiveLayerControls(layer) {
+  document.getElementById('watermarkText').value = layer.text;
+  document.getElementById('wmSize').value = layer.size;
+  document.getElementById('wmSizeVal').textContent = layer.size + 'px';
+  document.getElementById('wmOpacity').value = layer.opacity;
+  document.getElementById('wmOpacityVal').textContent = layer.opacity + '%';
+  document.getElementById('wmManualX').value = layer.offsetX;
+  document.getElementById('wmManualXVal').textContent = layer.offsetX + 'px';
+  document.getElementById('wmManualY').value = layer.offsetY;
+  document.getElementById('wmManualYVal').textContent = layer.offsetY + 'px';
+  document.querySelectorAll('[data-wpos]').forEach(b => b.classList.toggle('active', b.dataset.wpos === layer.pos));
+  const isPreset = ['#FFFFFF','#000000','#009CDE','#C8A49A','#FAF8F5'].includes((layer.color||'').toUpperCase()) ||
+                   ['#ffffff','#000000','#009cde','#c8a49a','#faf8f5'].includes(layer.color||'');
+  document.querySelectorAll('[data-wmcolor]').forEach(sw => sw.classList.toggle('active', sw.dataset.wmcolor === layer.color));
+  const swatch = document.getElementById('wmCustomColorSwatch');
+  const icon = document.getElementById('wmCustomColorIcon');
+  if (!isPreset && layer.color) {
+    document.getElementById('wmCustomColor').value = layer.color;
+    swatch.style.background = layer.color;
+    icon.style.display = 'none';
+  } else {
+    swatch.style.background = '';
+    icon.style.display = '';
+  }
+  document.getElementById('wmWeightNormal').classList.toggle('active', !layer.bold);
+  document.getElementById('wmWeightBold').classList.toggle('active', layer.bold);
+  document.getElementById('wmShadowOff').classList.toggle('active', !layer.shadow);
+  document.getElementById('wmShadowOn').classList.toggle('active', !!layer.shadow);
+}
+
+function applyToLayerScope(key, val) {
+  const ids = scopeAll ? sheetPresets.map(p => p.id) : [currentPreset().id];
+  ids.forEach(id => {
+    const layers = getSettings(id).textLayers;
+    const li = Math.min(activeLayerIdx, layers.length - 1);
+    layers[li][key] = val;
+  });
+  // 레이어 목록 프리뷰 갱신 (text 변경 시)
+  if (key === 'text') renderTextLayerList(currentSettings());
+  updateSheetPreview();
+}
+
+document.getElementById('addTextLayer').addEventListener('click', () => {
+  const ids = scopeAll ? sheetPresets.map(p => p.id) : [currentPreset().id];
+  ids.forEach(id => getSettings(id).textLayers.push(defaultTextLayer()));
+  activeLayerIdx = currentSettings().textLayers.length - 1;
+  renderTextLayerList(currentSettings());
+  loadActiveLayerControls(currentSettings().textLayers[activeLayerIdx]);
+  updateSheetPreview();
+});
+
+// ── 컨트롤 이벤트 ────────────────────────────────────
+// 이미지 위치 슬라이더
+document.getElementById('imgPosX').addEventListener('input', function() {
+  document.getElementById('imgPosXVal').textContent = this.value + '%';
+  applyToScope('posX', Number(this.value));
+});
+document.getElementById('imgPosY').addEventListener('input', function() {
+  document.getElementById('imgPosYVal').textContent = this.value + '%';
+  applyToScope('posY', Number(this.value));
+});
+
+// 슬라이더들 (이미지 보정 - applyToScope)
+const imgSliders = [
+  { id:'brightness', key:'brightness', valId:'brightnessVal', suffix:'%' },
+  { id:'contrast',   key:'contrast',   valId:'contrastVal',   suffix:'%' },
+  { id:'saturation', key:'saturation', valId:'saturationVal', suffix:'%' },
+  { id:'imgOpacity', key:'imgOpacity', valId:'imgOpacityVal', suffix:'%' },
+  { id:'imgZoom',    key:'imgZoom',    valId:'imgZoomVal',    suffix:'%' },
+];
+imgSliders.forEach(({ id, key, valId, suffix }) => {
+  document.getElementById(id).addEventListener('input', function() {
+    document.getElementById(valId).textContent = this.value + suffix;
+    applyToScope(key, Number(this.value));
+  });
+});
+
+// 슬라이더들 (활성 텍스트 레이어 - applyToLayerScope)
+const layerSliders = [
+  { id:'wmSize',    key:'size',    valId:'wmSizeVal',    suffix:'px' },
+  { id:'wmOpacity', key:'opacity', valId:'wmOpacityVal', suffix:'%' },
+  { id:'wmManualX', key:'offsetX', valId:'wmManualXVal', suffix:'px' },
+  { id:'wmManualY', key:'offsetY', valId:'wmManualYVal', suffix:'px' },
+];
+layerSliders.forEach(({ id, key, valId, suffix }) => {
+  document.getElementById(id).addEventListener('input', function() {
+    document.getElementById(valId).textContent = this.value + suffix;
+    applyToLayerScope(key, Number(this.value));
+  });
+});
+
+// 배경 투명도 슬라이더
+document.getElementById('bgOpacity').addEventListener('input', function() {
+  document.getElementById('bgOpacityVal').textContent = this.value + '%';
+  applyToScope('bgOpacity', Number(this.value));
+});
+
+// 배경색
+document.querySelectorAll('.color-swatch').forEach(sw => {
+  sw.addEventListener('click', () => {
+    document.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('active'));
+    sw.classList.add('active');
+    applyToScope('bgColor', sw.dataset.color);
+  });
+});
+document.getElementById('bgCustomColorSwatch').addEventListener('click', function() {
+  document.getElementById('customBgColor').click();
+});
+document.getElementById('customBgColor').addEventListener('input', function() {
+  document.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('active'));
+  document.getElementById('bgCustomColorSwatch').style.background = this.value;
+  applyToScope('bgColor', this.value);
+});
+document.getElementById('customBgColor').addEventListener('change', function() {
+  document.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('active'));
+  document.getElementById('bgCustomColorSwatch').style.background = this.value;
+  applyToScope('bgColor', this.value);
+});
+
+// 텍스트 입력 (textarea)
+document.getElementById('watermarkText').addEventListener('input', function() {
+  applyToLayerScope('text', this.value);
+});
+document.querySelectorAll('[data-wpos]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-wpos]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyToLayerScope('pos', btn.dataset.wpos);
+  });
+});
+
+// 텍스트 색상 스와치
+document.querySelectorAll('[data-wmcolor]').forEach(sw => {
+  sw.addEventListener('click', () => {
+    document.querySelectorAll('[data-wmcolor]').forEach(x => x.classList.remove('active'));
+    sw.classList.add('active');
+    applyToLayerScope('color', sw.dataset.wmcolor);
+  });
+});
+// 텍스트 색상 커스텀 피커 — div 클릭 시 input 열기
+document.getElementById('wmCustomColorSwatch').addEventListener('click', function() {
+  document.getElementById('wmCustomColor').click();
+});
+function applyCustomTextColor(val) {
+  document.querySelectorAll('[data-wmcolor]').forEach(x => x.classList.remove('active'));
+  document.getElementById('wmCustomColorSwatch').style.background = val;
+  document.getElementById('wmCustomColorIcon').style.display = 'none';
+  applyToLayerScope('color', val);
+}
+document.getElementById('wmCustomColor').addEventListener('input', function() {
+  applyCustomTextColor(this.value);
+});
+document.getElementById('wmCustomColor').addEventListener('change', function() {
+  applyCustomTextColor(this.value);
+});
+
+// 텍스트 굵기
+document.getElementById('wmWeightNormal').addEventListener('click', () => {
+  document.getElementById('wmWeightNormal').classList.add('active');
+  document.getElementById('wmWeightBold').classList.remove('active');
+  applyToLayerScope('bold', false);
+});
+document.getElementById('wmWeightBold').addEventListener('click', () => {
+  document.getElementById('wmWeightBold').classList.add('active');
+  document.getElementById('wmWeightNormal').classList.remove('active');
+  applyToLayerScope('bold', true);
+});
+document.getElementById('wmShadowOff').addEventListener('click', () => {
+  document.getElementById('wmShadowOff').classList.add('active');
+  document.getElementById('wmShadowOn').classList.remove('active');
+  applyToLayerScope('shadow', false);
+});
+document.getElementById('wmShadowOn').addEventListener('click', () => {
+  document.getElementById('wmShadowOn').classList.add('active');
+  document.getElementById('wmShadowOff').classList.remove('active');
+  applyToLayerScope('shadow', true);
+});
+
+// 채널 네비
+document.getElementById('navPrev').addEventListener('click', () => {
+  sheetIdx = (sheetIdx - 1 + sheetPresets.length) % sheetPresets.length;
+  loadSheetPreset(sheetIdx);
+});
+document.getElementById('navNext').addEventListener('click', () => {
+  sheetIdx = (sheetIdx + 1) % sheetPresets.length;
+  loadSheetPreset(sheetIdx);
+});
+
+// 적용 범위 토글
+document.getElementById('scopeCurrent').addEventListener('click', () => {
+  scopeAll = false;
+  document.getElementById('scopeCurrent').classList.add('active');
+  document.getElementById('scopeAll').classList.remove('active');
+});
+document.getElementById('scopeAll').addEventListener('click', () => {
+  scopeAll = true;
+  document.getElementById('scopeAll').classList.add('active');
+  document.getElementById('scopeCurrent').classList.remove('active');
+});
+
+// 초기화
+document.getElementById('sheetReset').addEventListener('click', () => {
+  const ids = scopeAll ? sheetPresets.map(p => p.id) : [currentPreset().id];
+  ids.forEach(id => { customSettings[id] = defaultSettings(); });
+  activeLayerIdx = 0;
+  loadSheetPreset(sheetIdx);
+});
+
+// 닫기
+document.getElementById('sheetClose').addEventListener('click', closeSheet);
+document.getElementById('sheetOverlay').addEventListener('click', closeSheet);
+
+// 내보내기 확정
+document.getElementById('sheetConfirm').addEventListener('click', async () => {
+  closeSheet();
+  const selected = sheetPresets;
+  const btn = document.getElementById('exportBtn');
+  btn.textContent = '내보내는 중...';
+  btn.disabled = true;
+
+  for (const p of selected) {
+    const s = getSettings(p.id);
+    await new Promise(resolve => {
+      const canvas = document.createElement('canvas');
+      drawImageCustom(canvas, srcImage, p.w, p.h, s);
+      canvas.toBlob(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `larosee_kv_${p.id}_${p.w}x${p.h}.${EXT[outputFormat]}`;
+        a.click(); URL.revokeObjectURL(a.href);
+        setTimeout(resolve, 150);
+      }, MIME[outputFormat], 0.92);
+    });
+  }
+  btn.textContent = '⬇ 내보내기';
+  btn.disabled = false;
+  showToast(selected.length + '개 파일 내보내기 완료');
+});
+
+// ── 내보내기 버튼 → 시트 열기 ─────────────────────────
+document.getElementById('exportBtn').addEventListener('click', () => {
+  openSheet();
+});
+
+// ── 토스트 ────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── 초기화 ────────────────────────────────────────
+renderPresets();
+</script>
+</body>
+</html>
